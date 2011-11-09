@@ -1,0 +1,5 @@
+This is the repository for the jLiki project.
+
+The project (and further information) is found in /jLiki.
+It is a Maven (http://maven.apache.org/) based Eclipse (http://www.eclipse.org/)
+project using Java 1.7.
