@@ -146,13 +146,13 @@ public class DBConfig implements DBConfigIfc {
      * @return the standard configuration
      */
     public static DBConfig getStandardDBConfig() {
-    	DBConfig cfg = new DBConfig();
-    	cfg.setDBDriver("com.mysql.jdbc.Driver");
-    	cfg.setDBUrl("jdbc:mysql://localhost:3306");
-    	cfg.setDBDatabaseName("jLiki");
-    	cfg.setDBUsername("jLiki");
-    	cfg.setDBPassword("jLikiPassword");
-    	cfg.setDBAdditionalParams(new HashMap<String, String>());
-		return cfg;
+        final DBConfig cfg = new DBConfig();
+        cfg.setDBDriver("com.mysql.jdbc.Driver");
+        cfg.setDBUrl("jdbc:mysql://localhost:3306");
+        cfg.setDBDatabaseName("jLiki");
+        cfg.setDBUsername("jLiki");
+        cfg.setDBPassword("jLikiPassword");
+        cfg.setDBAdditionalParams(new HashMap<String, String>());
+        return cfg;
     }
 }

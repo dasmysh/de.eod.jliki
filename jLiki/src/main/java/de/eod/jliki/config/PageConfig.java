@@ -107,11 +107,11 @@ public class PageConfig implements PageConfigIfc {
      * @return the standard configuration
      */
     public static PageConfig getStandardPageConfig() {
-    	PageConfig cfg = new PageConfig();
-    	cfg.setPageKeywords("jLiki,Latex");
-    	cfg.setPageTitle("jLiki - The LaTeX Wiki in Java");
-    	cfg.setPageName("Page title");
-    	cfg.setPageSubtitle("Page subtitle");
-		return cfg;
+        final PageConfig cfg = new PageConfig();
+        cfg.setPageKeywords("jLiki,Latex");
+        cfg.setPageTitle("jLiki - The LaTeX Wiki in Java");
+        cfg.setPageName("Page title");
+        cfg.setPageSubtitle("Page subtitle");
+        return cfg;
     }
 }
