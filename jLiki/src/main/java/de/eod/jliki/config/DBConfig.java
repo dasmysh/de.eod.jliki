@@ -22,6 +22,7 @@
  */
 package de.eod.jliki.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,15 +33,15 @@ import java.util.Map;
 public class DBConfig implements DBConfigIfc {
 
     /** holds the database driver. */
-    private String driver = "com.mysql.jdbc.Driver";
+    private String driver = "";
     /** holds the database url. */
-    private String url = "jdbc:mysql://localhost:3306";
+    private String url = "";
     /** holds the database name. */
-    private String dbName = "jLiki";
+    private String dbName = "";
     /** holds the database username. */
-    private String user = "jLiki";
+    private String user = "";
     /** holds the database users password. */
-    private String password = "jLikiPassword";
+    private String password = "";
     /** holds additional parameters for the database. */
     private Map<String, String> additionalParams = null;
 
@@ -140,4 +141,18 @@ public class DBConfig implements DBConfigIfc {
         this.additionalParams = theAdditionalParams;
     }
 
+    /**
+     * Returns the standard page configuration.<br/>
+     * @return the standard configuration
+     */
+    public static DBConfig getStandardDBConfig() {
+    	DBConfig cfg = new DBConfig();
+    	cfg.setDBDriver("com.mysql.jdbc.Driver");
+    	cfg.setDBUrl("jdbc:mysql://localhost:3306");
+    	cfg.setDBDatabaseName("jLiki");
+    	cfg.setDBUsername("jLiki");
+    	cfg.setDBPassword("jLikiPassword");
+    	cfg.setDBAdditionalParams(new HashMap<String, String>());
+		return cfg;
+    }
 }

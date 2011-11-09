@@ -1,20 +1,28 @@
+# jLiki
+[jLiki](http://github.com/smaisch/de.eod.jliki) is a Wiki-like web application that allows version management and online
+editing of several LaTeX-documents (a document may consist of several .tex-Files). 
 
+## Dependencies:
+jLiki is a web application written in Java (1.7) for Tomcat 7.0.
+The project is a Apache Maven / Eclipse project.
+For an easy build you will need at least [Apache Maven](http://maven.apache.org/) which takes care of other
+dependencies. To build this without Maven, the needed dependencies can be found in pom.xml.
+
+### Database server dependency:
+jLiki needs a database server to run. For standard this will be [MySQL]()/[MariaDB]() but it should be possible to 
+replace that by any other SQL-Server. After the first run there should be a file "config/jlikiConfig.xml" in the
+base directory of your Tomcat instance. The database connection (and several other properties) can be configured there.
+
+## Inspiration:
+jLiki is heavily inspired by [Liki - The LaTeX Wiki](http://sourceforge.net/projects/liki/) which did not fit all my
+requirements (performance, multiple project management, user management), so i decided to build a new one.
+
+## Current state:
+Not much is done yet ...
+
+## Who?
+jLiki is written by [Sebastian Maisch](http://github.com/smaisch)
+
+## License:
 Copyright (C) ${year} The jLiki Programming Team.
-
-This file is part of jLiki.
-
-jLiki is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-jLiki is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with jLiki.  If not, see <http://www.gnu.org/licenses/>.
-
-
-No documentation yet ...
+For license see /LICENSE

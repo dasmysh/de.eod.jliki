@@ -37,9 +37,9 @@ import java.io.IOException;
 public class Configuration {
 
     /** holds the page configuration. */
-    private PageConfig pageConfig = new PageConfig();
+    private PageConfig pageConfig = PageConfig.getStandardPageConfig();
     /** holds the database configuration. */
-    private DBConfig dbConfig = new DBConfig();
+    private DBConfig dbConfig = DBConfig.getStandardDBConfig();
 
     /** holds the database configuration. */
     //privat

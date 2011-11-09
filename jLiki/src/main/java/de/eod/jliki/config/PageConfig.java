@@ -32,11 +32,11 @@ public class PageConfig implements PageConfigIfc {
     /** holds the pages keywords. */
     private String keywords = "";
     /** holds the pages title. */
-    private String pageTitle = "jLiki - The LaTeX Wiki in Java";
+    private String pageTitle = "";
     /** holds the pages name. */
-    private String pageName = "Page title";
+    private String pageName = "";
     /** holds the pages subtitle. */
-    private String pageSubtitle = "Page subtitle";
+    private String pageSubtitle = "";
 
     /* (non-Javadoc)
      * @see de.eod.jliki.config.PageConfigIfc#getPageKeywords()
@@ -102,4 +102,16 @@ public class PageConfig implements PageConfigIfc {
         this.pageSubtitle = subtitle;
     }
 
+    /**
+     * Returns the standard page configuration.<br/>
+     * @return the standard configuration
+     */
+    public static PageConfig getStandardPageConfig() {
+    	PageConfig cfg = new PageConfig();
+    	cfg.setPageKeywords("jLiki,Latex");
+    	cfg.setPageTitle("jLiki - The LaTeX Wiki in Java");
+    	cfg.setPageName("Page title");
+    	cfg.setPageSubtitle("Page subtitle");
+		return cfg;
+    }
 }
