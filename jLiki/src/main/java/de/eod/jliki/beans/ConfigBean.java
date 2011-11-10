@@ -22,6 +22,8 @@
  */
 package de.eod.jliki.beans;
 
+import java.io.Serializable;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -32,9 +34,12 @@ import de.eod.jliki.config.ConfigManager;
  *
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  */
-@ManagedBean
+@ManagedBean(name = "configBean")
 @SessionScoped
-public class ConfigBean {
+public class ConfigBean implements Serializable {
+
+    /** holds serialization UID. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * @return the keywords

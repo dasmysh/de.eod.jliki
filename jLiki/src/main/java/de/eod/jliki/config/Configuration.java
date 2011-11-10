@@ -28,18 +28,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * This class holds the jLiki server configuration and is able to load from/save to file.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class Configuration {
+public class Configuration implements Serializable {
 
+    /** holds serialization UID. */
+    private static final long serialVersionUID = 1L;
     /** holds the page configuration. */
-    private PageConfig pageConfig = PageConfig.getStandardPageConfig();
+    private PageConfig pageConfig = new PageConfig();
     /** holds the database configuration. */
-    private DBConfig dbConfig = DBConfig.getStandardDBConfig();
+    private DBConfig dbConfig = new DBConfig();
 
     /** holds the database configuration. */
     //privat
@@ -107,4 +110,14 @@ public class Configuration {
         this.dbConfig = theDBConfig;
     }
 
+    /**
+     * Returns the standard configuration object.<br/>
+     * @return the standard configuration
+     */
+    public static final Configuration getStandardConfig() {
+        final Configuration cfg = new Configuration();
+        cfg.setPageConfig(PageConfig.getStandardPageConfig());
+        cfg.setDbConfig(DBConfig.getStandardDBConfig());
+        return cfg;
+    }
 }

@@ -82,7 +82,7 @@ public final class ConfigManager implements PageConfigIfc, DBConfigIfc {
      * Creates the standard configuration.<br/>
      */
     private void createStandardConfig() {
-        this.config = new Configuration();
+        this.config = Configuration.getStandardConfig();
     }
 
     /**

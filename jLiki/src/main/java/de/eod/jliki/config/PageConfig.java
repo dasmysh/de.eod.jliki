@@ -22,13 +22,17 @@
  */
 package de.eod.jliki.config;
 
+import java.io.Serializable;
+
 /**
  * This class holds the jLiki server page configuration.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class PageConfig implements PageConfigIfc {
+public class PageConfig implements PageConfigIfc, Serializable {
 
+    /** holds serialization UID. */
+    private static final long serialVersionUID = 1L;
     /** holds the pages keywords. */
     private String keywords = "";
     /** holds the pages title. */

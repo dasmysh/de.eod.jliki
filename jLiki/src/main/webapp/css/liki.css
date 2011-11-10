@@ -1,0 +1,160 @@
+/**
+ * Copyright (C) 2011 The jLiki Programming Team.
+ * This file is part of jLiki.
+ * For license see /LICENSE
+ */
+@CHARSET "UTF-8";
+
+body{
+  text-align: center;
+  margin: 0px;
+  border-spacing: 0px;
+  background: #ffffff;
+  font-family: "verdana";
+  font-size: 10px;
+}
+
+a:active {
+  text-decoration: none;
+  color: #5555cc
+}
+
+a:hover {
+  color: #aa2222;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #5555cc;
+  text-decoration: none;
+}
+
+a:link {
+  text-decoration: none;
+  color: #5555cc
+}
+
+a:focus {
+  text-decoration: none;
+  color: #5555cc
+}
+
+
+div.header {
+  position: relative;
+  top: 20px;
+  left: 10%;
+  width: 80%;
+}
+
+div.header_left {
+  text-align: left;
+  float: left;
+}
+
+div.header_right {
+  text-align: right;
+}
+
+div.main {
+  clear: left;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  border: 1px solid #cccccc;
+  font-size: 14px;
+  color: #444444;
+  left: 10%;
+  width: 80%;
+  top: 20px;
+  position: relative;
+}
+
+div.footer {
+  position: relative;
+  left: 10%;
+  width: 80%;
+  top: 25px;
+}
+div.footer_left {
+  text-align: left;
+  float: left;
+}
+
+div.footer_right {
+  text-align: right;
+}
+
+.app_title {
+  font-weight: 700;
+  height: 18px;
+  text-align: right;
+  padding-right: 10px;
+  color: #000;
+}
+
+.app_title a {
+  color: #000;
+}
+
+span.latex {
+  font-family: bookman, serif;
+  font-size: 115%;
+  color: #000;
+}
+
+span.latex span.A{
+  font-size: 80%;
+  vertical-align: text-top;
+}
+
+span.latex span.E {
+  font-size: 80%;
+  vertical-align: text-bottom;
+}
+
+.page_title {
+  font-size: 21px;
+  font-weight: 700;
+  text-align: left;
+  padding: 20px;
+  padding-left: 10px;
+}
+
+.page_subtitle {
+  font-size: 9px;
+  font-weight: 700;
+  text-align: left;
+  padding: 10px;
+}
+
+.fatal {
+  color: #8A0808;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px;
+}
+
+.error {
+  color: #f00;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px;
+}
+
+.warn {
+  color: #DF7401;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px;
+}
+
+.info {
+  color: #088A29;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 10px;
+}

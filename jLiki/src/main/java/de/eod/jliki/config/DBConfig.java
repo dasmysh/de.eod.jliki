@@ -22,6 +22,7 @@
  */
 package de.eod.jliki.config;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +31,10 @@ import java.util.Map;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class DBConfig implements DBConfigIfc {
+public class DBConfig implements DBConfigIfc, Serializable {
 
+    /** holds serialization UID. */
+    private static final long serialVersionUID = 1L;
     /** holds the database driver. */
     private String driver = "";
     /** holds the database url. */

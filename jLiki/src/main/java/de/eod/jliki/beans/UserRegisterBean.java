@@ -32,7 +32,7 @@ import javax.validation.constraints.Size;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-@ManagedBean
+@ManagedBean(name = "userRegisterBean")
 @RequestScoped
 public class UserRegisterBean implements Cloneable {
 

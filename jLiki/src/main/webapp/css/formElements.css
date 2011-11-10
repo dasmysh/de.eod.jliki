@@ -1,0 +1,21 @@
+/**
+ * Copyright (C) 2011 The jLiki Programming Team.
+ * This file is part of jLiki.
+ * For license see /LICENSE
+ */
+@CHARSET "UTF-8";
+
+input{
+  height: 20px;
+  font-size: 10px;
+  border: 1px solid #cccccc;
+  margin: 2px;
+  vertical-align: middle;
+}
+
+input.submit{
+  background:#eeeeee;
+  height: 20px;
+  font-size: 10px;
+  border: 1px solid #cccccc;
+}

@@ -22,8 +22,12 @@
  */
 package de.eod.jliki.beans;
 
+import java.io.Serializable;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import de.eod.jliki.util.BeanLogger;
 
@@ -32,10 +36,12 @@ import de.eod.jliki.util.BeanLogger;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-@ManagedBean
+@ManagedBean(name = "loginBean")
 @SessionScoped
-public class LoginBean {
+public class LoginBean implements Serializable {
 
+    /** holds serialization UID. */
+    private static final long serialVersionUID = 1L;
     /** holds the logger. */
     private static final BeanLogger LOGGER = new BeanLogger(LoginBean.class);
     /** true if a user is logged in. */
@@ -43,11 +49,11 @@ public class LoginBean {
     /** true if login failed. */
     private boolean isLoginFailed = false;
     /** holds the username of the user logged in. */
+    @NotBlank(message = "Username may not be blank!")
     private String userName = "user";
     /** holds the users password. */
+    @NotBlank(message = "Password may not be blank!")
     private String password = null;
-    /** holds the users email address. */
-    private String email = "eMail";
 
     /**
      * @return the password
@@ -92,34 +98,10 @@ public class LoginBean {
     }
 
     /**
-     * @return the email
-     */
-    public final String getEmail() {
-        return this.email;
-    }
-
-    /**
-     * @param theEmail the email to set
-     */
-    public final void setEmail(final String theEmail) {
-        this.email = theEmail;
-    }
-
-    /**
      * try to do the logon.<br/>
-     * @return a string indicating success or failure
+     * @return always a null object
      */
     public final String doLogon() {
-        if (this.userName == null || this.userName.trim().isEmpty()) {
-            LOGGER.error("Username must not be \"null\" or empty.");
-            return null;
-        }
-
-        if (this.password == null || this.password.trim().isEmpty()) {
-            LOGGER.error("Password must not be \"null\" or empty.");
-            return null;
-        }
-
         if (this.userName.equals("smaisch") && this.password.equals("test")) {
             this.password = null;
             this.isLoggedIn = true;
@@ -143,23 +125,6 @@ public class LoginBean {
         this.isLoginFailed = false;
         this.userName = null;
         this.password = null;
-        return "logout_success";
-    }
-
-    /**
-     * registers a new user.<br/>
-     * @return a string indicating success of failure
-     */
-    public final String doRegister() {
-        if (this.email == null || this.email.trim().isEmpty()) {
-            LOGGER.error("eMail must not be \"null\" or empty.");
-            return null;
-        }
-
-        if (!this.email.matches("\\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b")) {
-            LOGGER.error("This is not a valid eMail address: " + this.email);
-            return null;
-        }
-        return null;
+        return "";
     }
 }

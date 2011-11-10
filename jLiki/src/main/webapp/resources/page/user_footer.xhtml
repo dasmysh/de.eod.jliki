@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   Copyright (C) 2011 The jLiki Programming Team.
+   This file is part of jLiki.
+   For license see /LICENSE
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+  <h:head />
+  <h:body>
+    <composite:interface>
+      <composite:attribute name="register_dlg_id" required="true"/>
+    </composite:interface>
+
+    <composite:implementation>
+      <h:form id="loginForm" rendered="#{!loginBean.loggedIn}">
+        <h:inputText id="p" value="#{loginBean.userName}"/>
+        <h:inputSecret id="pw" value="#{loginBean.password}"/>
+        <h:commandButton id="submit" value="#{msg['login.button']}" action="#{loginBean.doLogon}" />
+        <div><h:message for="p" styleClass="error"/><h:message for="pw" styleClass="error"/></div>
+      </h:form>
+      <h:outputLink value="#" id="registerLink" onclick="#{rich:component(cc.attrs.register_dlg_id)}.show()">
+        <h:outputText value="#{msg['register.button']}"/>
+      </h:outputLink>
+      <h:form id="logoutForm" rendered="#{loginBean.loggedIn}">
+        <h:commandLink id="logout" value="#{msg['logout.link']}" action="#{loginBean.doLogout}"/>
+      </h:form>
+    </composite:implementation>
+  </h:body>
+</html>
