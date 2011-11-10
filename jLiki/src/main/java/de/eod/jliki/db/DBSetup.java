@@ -1,5 +1,5 @@
 /**
- * Copyright (C) ${year} The jLiki Programming Team.
+ * Copyright (C) 2011 The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *

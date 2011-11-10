@@ -1,6 +1,6 @@
 /**
  * /**
- * Copyright (C) ${year} The jLiki Programming Team.
+ * Copyright (C) 2011 The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -23,9 +23,17 @@
  */
 package de.eod.jliki.beans;
 
+import java.io.Serializable;
+
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
  * Bean that manages user registration.<br/>
@@ -34,22 +42,42 @@ import javax.validation.constraints.Size;
  */
 @ManagedBean(name = "userRegisterBean")
 @RequestScoped
-public class UserRegisterBean implements Cloneable {
+public class UserRegisterBean implements Cloneable, Serializable {
+
+    /** holds default serialization UID. */
+    private static final long serialVersionUID = 1L;
 
     /** holds the username. */
     // CHECKSTYLE IGNORE
-    @Size(min = 3, max = 25, message = "Wrong size for username")
+    @Size(min = 3, max = 25, message = "{register.panel.invalid.username}")
     private String username;
     /** holds the password. */
+    // CHECKSTYLE IGNORE
+    @Size(min = 6, max = 50, message = "{register.panel.invalid.password}")
     private String password;
     /** holds the password confirm. */
+    // CHECKSTYLE IGNORE
+    @Size(min = 6, max = 50, message = "{register.panel.invalid.password}")
     private String confirm;
     /** holds the users email. */
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$",
+            message = "{register.panel.invalid.email}")
     private String email;
     /** holds the users first name. */
+    @NotBlank(message = "{register.panel.invalid.firstname}")
     private String firstname;
     /** holds the users last name. */
+    @NotBlank(message = "{register.panel.invalid.lastname}")
     private String lastname;
+
+    /**
+     * Makes sure password and confirm are the same.<br/>
+     * @return true if password and confirm match
+     */
+    @AssertTrue(message = "{register.panel.invalid.confirm.password}")
+    public final boolean isPasswordsEquals() {
+        return this.password.equals(this.confirm);
+    }
 
     /**
      * @return the username
@@ -108,6 +136,14 @@ public class UserRegisterBean implements Cloneable {
     }
 
     /**
+     * Adds a new user to the jLiki database.<br/>
+     */
+    public final void addNewUser() {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Succesfully changed!", "Succesfully changed!"));
+    }
+
+    /**
      * @return the firstname
      */
     public final String getFirstname() {
@@ -139,7 +175,7 @@ public class UserRegisterBean implements Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    protected final Object clone() throws CloneNotSupportedException {
+    public final Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 }

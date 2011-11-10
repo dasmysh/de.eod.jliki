@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <!--
    Copyright (C) 2011 The jLiki Programming Team.
    This file is part of jLiki.
    For license see /LICENSE
   -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:composite="http://java.sun.com/jsf/composite" xmlns:h="http://java.sun.com/jsf/html"
       xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
@@ -23,26 +23,31 @@
           <h:outputLink value="#" onclick="#{rich:component(cc.attrs.register_dlg_id)}.hide(); return false;">X</h:outputLink>
         </f:facet>
         <h:form id="registerForm">
-          <h:panelGrid id="registerFormPanel" columns="3" styleClass="dialogPanel">
-            <h:outputLabel for="username" value="#{msg['register.panel.username']}"/>
-            <h:inputText id="username" value=""/>
-            <rich:message for="username"/>
-            <h:outputLabel for="password" value="#{msg['register.panel.password']}"/>
-            <h:inputText id="password" value=""/>
-            <rich:message for="password"/>
-            <h:outputLabel for="confpass" value="#{msg['register.panel.confirm.password']}"/>
-            <h:inputText id="confpass" value=""/>
-            <rich:message for="confpass"/>
-            <h:outputLabel for="email" value="#{msg['register.panel.email']}"/>
-            <h:inputText id="email" value=""/>
-            <rich:message for="email"/>
-            <h:outputLabel for="firstname" value="#{msg['register.panel.firstname']}"/>
-            <h:inputText id="firstname" value=""/>
-            <rich:message for="firstname"/>
-            <h:outputLabel for="lastname" value="#{msg['register.panel.lastname']}"/>
-            <h:inputText id="lastname" value=""/>
-            <rich:message for="lastname"/>
-          </h:panelGrid>
+          <rich:graphValidator value="#{userRegisterBean}" id="gv">
+            <rich:messages for="gv"/>
+            <rich:messages globalOnly="true"/>
+            <h:panelGrid id="registerFormPanel" columns="3" styleClass="dialogPanel">
+              <h:outputLabel for="username" value="#{msg['register.panel.username']}"/>
+              <h:inputText id="username" value="#{userRegisterBean.username}"/>
+              <rich:message for="username"/>
+              <h:outputText for="password" value="#{msg['register.panel.password']}"/>
+              <h:inputSecret id="password" value="#{userRegisterBean.password}"/>
+              <rich:message for="password"/>
+              <h:outputLabel for="confpass" value="#{msg['register.panel.confirm.password']}"/>
+              <h:inputSecret id="confpass" value="#{userRegisterBean.confirm}"/>
+              <rich:message for="confpass"/>
+              <h:outputLabel for="email" value="#{msg['register.panel.email']}"/>
+              <h:inputText id="email" value="#{userRegisterBean.email}"/>
+              <rich:message for="email"/>
+              <h:outputLabel for="firstname" value="#{msg['register.panel.firstname']}"/>
+              <h:inputText id="firstname" value="#{userRegisterBean.firstname}"/>
+              <rich:message for="firstname"/>
+              <h:outputLabel for="lastname" value="#{msg['register.panel.lastname']}"/>
+              <h:inputText id="lastname" value="#{userRegisterBean.lastname}"/>
+              <rich:message for="lastname"/>
+            </h:panelGrid>
+            <a4j:commandButton value="Store changes" action="#{userRegisterBean.addNewUser}" />
+          </rich:graphValidator>
         </h:form>
       </rich:popupPanel>
     </composite:implementation>

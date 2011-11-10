@@ -1,5 +1,5 @@
 /**
- * Copyright (C) ${year} The jLiki Programming Team.
+ * Copyright (C) 2011 The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -46,8 +46,6 @@ public class LoginBean implements Serializable {
     private static final BeanLogger LOGGER = new BeanLogger(LoginBean.class);
     /** true if a user is logged in. */
     private boolean isLoggedIn = false;
-    /** true if login failed. */
-    private boolean isLoginFailed = false;
     /** holds the username of the user logged in. */
     @NotBlank(message = "Username may not be blank!")
     private String userName = "user";
@@ -77,13 +75,6 @@ public class LoginBean implements Serializable {
     }
 
     /**
-     * @return the hasLoginFailed
-     */
-    public final boolean isLoginFailed() {
-        return this.isLoginFailed;
-    }
-
-    /**
      * @return the userName
      */
     public final String getUserName() {
@@ -105,13 +96,11 @@ public class LoginBean implements Serializable {
         if (this.userName.equals("smaisch") && this.password.equals("test")) {
             this.password = null;
             this.isLoggedIn = true;
-            this.isLoginFailed = false;
             return null;
         }
 
         this.password = null;
         this.isLoggedIn = false;
-        this.isLoginFailed = true;
         LOGGER.info("Login failed.");
         return null;
     }
@@ -122,7 +111,6 @@ public class LoginBean implements Serializable {
      */
     public final String doLogout() {
         this.isLoggedIn = false;
-        this.isLoginFailed = false;
         this.userName = null;
         this.password = null;
         return "";
