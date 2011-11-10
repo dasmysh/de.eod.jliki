@@ -22,14 +22,12 @@
  */
 package de.eod.jliki.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import de.eod.jliki.config.ConfigManager;
 
@@ -41,16 +39,15 @@ import de.eod.jliki.config.ConfigManager;
 public class DBManager {
 
     /** holds the logger. */
-    private final Logger logger = Logger.getLogger(DBManager.class);
+    // private final Logger logger = Logger.getLogger(DBManager.class);
     /** holds the database connection. */
-    private Connection connection = null;
-    /** holds a set of layout ensurer objects. */
-    private final Map<String, DBLayoutEnsureIfc> ensurers = new HashMap<String, DBLayoutEnsureIfc>();
+    private SessionFactory hibSessionFactory = null;
 
     /**
      * Creates instance.<br/>
+     * @param tableClasses the classes (with annotations) that can be stored in the database
      */
-    public DBManager() {
+    public DBManager(final Class<?>[] tableClasses) {
         final String jdbcDriver = ConfigManager.getInstance().getDBDriver();
         final String dbUrl = ConfigManager.getInstance().getDBUrl();
         final String dbName = ConfigManager.getInstance().getDBDatabaseName();
@@ -58,59 +55,56 @@ public class DBManager {
         final String dbPass = ConfigManager.getInstance().getDBPassword();
         final Map<String, String> addParams = ConfigManager.getInstance().getDBAdditionalParams();
 
-        final Properties dbProps = new Properties();
-        dbProps.setProperty("user", dbUser);
-        dbProps.setProperty("password", dbPass);
-        if (addParams != null) {
-            for (final Map.Entry<String, String> entry : addParams.entrySet()) {
-                dbProps.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-
         String connectUrl = dbUrl;
         if (!dbUrl.endsWith("/")) {
             connectUrl += "/";
         }
         connectUrl += dbName;
 
-        try {
-            Class.forName(jdbcDriver).newInstance();
-        } catch (final InstantiationException e) {
-            this.logger.fatal("Could not find jdbc driver: " + jdbcDriver, e);
-            return;
-        } catch (final IllegalAccessException e) {
-            this.logger.fatal("Could not find jdbc driver: " + jdbcDriver, e);
-            return;
-        } catch (final ClassNotFoundException e) {
-            this.logger.fatal("Could not find jdbc driver: " + jdbcDriver, e);
-            return;
-        }
+        final Properties dbProps = new Properties();
+        dbProps.setProperty("hibernate.connection.driver_class", jdbcDriver);
+        dbProps.setProperty("hibernate.connection.url", connectUrl);
+        dbProps.setProperty("hibernate.connection.username", dbUser);
+        dbProps.setProperty("hibernate.connection.password", dbPass);
+        dbProps.setProperty("hibernate.c3p0.min_size", "5");
+        dbProps.setProperty("hibernate.c3p0.max_size", "20");
+        dbProps.setProperty("hibernate.c3p0.timeout", "1800");
+        dbProps.setProperty("hibernate.c3p0.max_statements", "50");
 
-        try {
-            this.connection = DriverManager.getConnection(connectUrl, dbProps);
-        } catch (final SQLException e) {
-            this.logger.error("Could not connect to database: " + connectUrl, e);
-            return;
-        }
-    }
-
-    /**
-     * Adds a layout ensurer to the list.<br/>
-     * @param ens the ensurer
-     */
-    public final void addLayoutEnsurer(final DBLayoutEnsureIfc ens) {
-        this.ensurers.put(ens.getUniqueName(), ens);
-    }
-
-    /**
-     * Ensures the database is up to date.<br/>
-     */
-    public final void ensureCurrentDB() {
-        for (final DBLayoutEnsureIfc ens : this.ensurers.values()) {
-            if (!ens.isDBUpToDate(this.connection)) {
-                this.logger.warn("Database is not up to date for " + ens.getUniqueName() + ", updating...");
-                ens.updateDB(this.connection);
+        if (addParams != null) {
+            for (final Map.Entry<String, String> entry : addParams.entrySet()) {
+                dbProps.setProperty(entry.getKey(), entry.getValue());
             }
         }
+
+        final Configuration hibConfig = new Configuration();
+        hibConfig.setProperties(dbProps);
+
+        for (final Class<?> clazz : tableClasses) {
+            hibConfig.addAnnotatedClass(clazz);
+        }
+
+        this.hibSessionFactory = hibConfig.buildSessionFactory();
     }
+
+    /**
+     * Saves an object to the database.<br/>
+     * @param obj the object to save
+     */
+    public final void saveObject(final Object obj) {
+        final Session session = this.hibSessionFactory.openSession();
+        session.beginTransaction();
+        session.save(obj);
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
+     * Returns the database connection.<br/>
+     * @return the connection
+     */
+    public final SessionFactory getSessionFactory() {
+        return this.hibSessionFactory;
+    }
+
 }

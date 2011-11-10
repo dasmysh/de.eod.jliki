@@ -28,12 +28,15 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+
+import de.eod.jliki.db.DBSetup;
+import de.eod.jliki.db.beans.User;
+import de.eod.jliki.util.Messages;
 
 /**
  * Bean that manages user registration.<br/>
@@ -136,14 +139,6 @@ public class UserRegisterBean implements Cloneable, Serializable {
     }
 
     /**
-     * Adds a new user to the jLiki database.<br/>
-     */
-    public final void addNewUser() {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Succesfully changed!", "Succesfully changed!"));
-    }
-
-    /**
      * @return the firstname
      */
     public final String getFirstname() {
@@ -177,5 +172,16 @@ public class UserRegisterBean implements Cloneable, Serializable {
     @Override
     public final Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    /**
+     * Adds a new user to the jLiki database.<br/>
+     */
+    public final void addNewUser() {
+        final User newUser = new User(this.username, this.password, this.email,
+                this.firstname, this.lastname);
+        DBSetup.getDbManager().saveObject(newUser);
+
+        Messages.addFacesMessage(null, FacesMessage.SEVERITY_INFO, "message.user.registered", this.username);
     }
 }

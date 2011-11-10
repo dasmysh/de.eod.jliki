@@ -31,6 +31,8 @@ import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
 
+import de.eod.jliki.db.beans.User;
+
 /**
  * Sets up the database for the jLiki.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
@@ -54,13 +56,9 @@ public class DBSetup extends GenericServlet {
 
         this.logger.info("Starting with database setup...");
 
+        final Class<?>[] tableClasses = new Class<?>[] {User.class};
         // setup database ...
-        setDbManager(new DBManager());
-
-        // add all ensurers ...
-
-        // make sure database is up to date ...
-        dbManager.ensureCurrentDB();
+        setDbManager(new DBManager(tableClasses));
 
         this.logger.info("Finished with database setup...");
     }

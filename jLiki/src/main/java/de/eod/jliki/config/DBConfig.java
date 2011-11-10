@@ -155,7 +155,12 @@ public class DBConfig implements DBConfigIfc, Serializable {
         cfg.setDBDatabaseName("jLiki");
         cfg.setDBUsername("jLiki");
         cfg.setDBPassword("jLikiPassword");
-        cfg.setDBAdditionalParams(new HashMap<String, String>());
+
+        /** @see http://docs.jboss.org/hibernate/core/3.6/javadocs/org/hibernate/dialect/package-frame.html */
+        final Map<String, String> additionalParams = new HashMap<String, String>();
+        additionalParams.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        additionalParams.put("hibernate.hbm2ddl.auto", "update");
+        cfg.setDBAdditionalParams(additionalParams);
         return cfg;
     }
 }
