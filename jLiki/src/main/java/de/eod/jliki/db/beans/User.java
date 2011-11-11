@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: User.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -267,8 +270,9 @@ public class User implements Serializable {
         this.salt = theSalt;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see java.lang.Object#toString()
+     * {@inheritDoc}
      */
     @Override
     public final String toString() {

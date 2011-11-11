@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: LoginBean.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *

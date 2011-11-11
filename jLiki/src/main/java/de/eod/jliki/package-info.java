@@ -1,19 +1,19 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: package_info.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
- * jLiki is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * For license see /LICENSE.
  *
  * Author: Sebastian Maisch
  * Last changes:
- * 08.11.2011: File creation.
- */
-/**
+ * 6.11.2011: File creation.
+ *
  * This is the main package for the jLiki project.
- * @since 0.0.1
+ * @since 0.1
  */
 package de.eod.jliki;
 

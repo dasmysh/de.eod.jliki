@@ -1,6 +1,8 @@
 /**
- * /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: UserRegisterBean.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -166,8 +168,9 @@ public class UserRegisterBean implements Cloneable, Serializable {
         this.lastname = theLastname;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see java.lang.Object#clone()
+     * {@inheritDoc}
      */
     @Override
     public final Object clone() throws CloneNotSupportedException {

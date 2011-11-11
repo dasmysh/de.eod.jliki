@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: PageConfig.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -42,64 +45,72 @@ public class PageConfig implements PageConfigIfc, Serializable {
     /** holds the pages subtitle. */
     private String pageSubtitle = "";
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.PageConfigIfc#getPageKeywords()
+     * {@inheritDoc}
      */
     @Override
     public final String getPageKeywords() {
         return this.keywords;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageKeywords(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setPageKeywords(final String theKeywords) {
         this.keywords = theKeywords;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageTitle()
+     * {@inheritDoc}
      */
     @Override
     public final String getPageTitle() {
         return this.pageTitle;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageTitle(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setPageTitle(final String title) {
         this.pageTitle = title;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageName()
+     * {@inheritDoc}
      */
     @Override
     public final String getPageName() {
         return this.pageName;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageName(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setPageName(final String name) {
         this.pageName = name;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageSubtitle()
+     * {@inheritDoc}
      */
     @Override
     public final String getPageSubtitle() {
         return this.pageSubtitle;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageSubtitle(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setPageSubtitle(final String subtitle) {

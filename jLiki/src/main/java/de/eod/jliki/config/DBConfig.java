@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: DBConfig.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -48,99 +51,112 @@ public class DBConfig implements DBConfigIfc, Serializable {
     /** holds additional parameters for the database. */
     private Map<String, String> additionalParams = null;
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBDriver()
+     * {@inheritDoc}
      */
     @Override
     public final String getDBDriver() {
         return this.driver;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBDriver(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setDBDriver(final String theDriver) {
         this.driver = theDriver;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBUrl()
+     * {@inheritDoc}
      */
     @Override
     public final String getDBUrl() {
         return this.url;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBUrl(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setDBUrl(final String theUrl) {
         this.url = theUrl;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBDatabaseName()
+     * {@inheritDoc}
      */
     @Override
     public final String getDBDatabaseName() {
         return this.dbName;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBDatabaseName(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setDBDatabaseName(final String theDBName) {
         this.dbName = theDBName;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBUsername()
+     * {@inheritDoc}
      */
     @Override
     public final String getDBUsername() {
         return this.user;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBUsername(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setDBUsername(final String theUser) {
         this.user = theUser;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBPassword()
+     * {@inheritDoc}
      */
     @Override
     public final String getDBPassword() {
         return this.password;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBPassword(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public final void setDBPassword(final String thePassword) {
         this.password = thePassword;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBAdditionalParams()
+     * {@inheritDoc}
      */
     @Override
     public final Map<String, String> getDBAdditionalParams() {
         return this.additionalParams;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBAdditionalParams(java.util.List)
+     * {@inheritDoc}
      */
     @Override
-    public final void setDBAdditionalParams(final Map<String, String> theAdditionalParams) {
+    public final void setDBAdditionalParams(
+            final Map<String, String> theAdditionalParams) {
         this.additionalParams = theAdditionalParams;
     }
 
@@ -158,7 +174,8 @@ public class DBConfig implements DBConfigIfc, Serializable {
 
         /** @see http://docs.jboss.org/hibernate/core/3.6/javadocs/org/hibernate/dialect/package-frame.html */
         final Map<String, String> additionalParams = new HashMap<String, String>();
-        additionalParams.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        additionalParams.put("hibernate.dialect",
+                "org.hibernate.dialect.MySQLDialect");
         additionalParams.put("hibernate.hbm2ddl.auto", "update");
         cfg.setDBAdditionalParams(additionalParams);
         return cfg;

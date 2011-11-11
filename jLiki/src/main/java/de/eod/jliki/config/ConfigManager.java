@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: ConfigManager.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -33,7 +36,8 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public final class ConfigManager implements PageConfigIfc, DBConfigIfc {
+public final class ConfigManager implements PageConfigIfc, DBConfigIfc,
+        EMailConfigIfc {
 
     /** holds the logger. */
     private final Logger logger = Logger.getLogger(ConfigManager.class);
@@ -100,7 +104,8 @@ public final class ConfigManager implements PageConfigIfc, DBConfigIfc {
             this.logger.error("Could not save config to file: " + CONFIG_FILENAME, e);
             return;
         }
-        this.logger.info("Config file created: " + (new File(CONFIG_FILENAME).getAbsolutePath()));
+        this.logger.info("Config file created: "
+                + (new File(CONFIG_FILENAME).getAbsolutePath()));
     }
 
     /**
@@ -110,163 +115,291 @@ public final class ConfigManager implements PageConfigIfc, DBConfigIfc {
         return INSTANCE;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageKeywords()
+     * {@inheritDoc}
      */
     @Override
     public String getPageKeywords() {
         return this.config.getPageConfig().getPageKeywords();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageKeywords(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setPageKeywords(final String keywords) {
         this.config.getPageConfig().setPageKeywords(keywords);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageTitle()
+     * {@inheritDoc}
      */
     @Override
     public String getPageTitle() {
         return this.config.getPageConfig().getPageTitle();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageTitle(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setPageTitle(final String title) {
         this.config.getPageConfig().setPageTitle(title);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageName()
+     * {@inheritDoc}
      */
     @Override
     public String getPageName() {
         return this.config.getPageConfig().getPageName();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageName(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setPageName(final String name) {
         this.config.getPageConfig().setPageName(name);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#getPageSubtitle()
+     * {@inheritDoc}
      */
     @Override
     public String getPageSubtitle() {
         return this.config.getPageConfig().getPageSubtitle();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.ConfigurationIfc#setPageSubtitle(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setPageSubtitle(final String subtitle) {
         this.config.getPageConfig().setPageSubtitle(subtitle);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBDriver()
+     * {@inheritDoc}
      */
     @Override
     public String getDBDriver() {
         return this.config.getDbConfig().getDBDriver();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBDriver(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setDBDriver(final String driver) {
         this.config.getDbConfig().setDBDriver(driver);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBUrl()
+     * {@inheritDoc}
      */
     @Override
     public String getDBUrl() {
         return this.config.getDbConfig().getDBUrl();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBUrl(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setDBUrl(final String url) {
         this.config.getDbConfig().setDBUrl(url);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBDatabaseName()
+     * {@inheritDoc}
      */
     @Override
     public String getDBDatabaseName() {
         return this.config.getDbConfig().getDBDatabaseName();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBDatabaseName(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setDBDatabaseName(final String dbName) {
         this.config.getDbConfig().setDBDatabaseName(dbName);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBUsername()
+     * {@inheritDoc}
      */
     @Override
     public String getDBUsername() {
         return this.config.getDbConfig().getDBUsername();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBUsername(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setDBUsername(final String user) {
         this.config.getDbConfig().setDBUsername(user);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBPassword()
+     * {@inheritDoc}
      */
     @Override
     public String getDBPassword() {
         return this.config.getDbConfig().getDBPassword();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBPassword(java.lang.String)
+     * {@inheritDoc}
      */
     @Override
     public void setDBPassword(final String password) {
         this.config.getDbConfig().setDBPassword(password);
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#getDBAdditionalParams()
+     * {@inheritDoc}
      */
     @Override
     public Map<String, String> getDBAdditionalParams() {
         return this.config.getDbConfig().getDBAdditionalParams();
     }
 
-    /* (non-Javadoc)
+    /**
      * @see de.eod.jliki.config.DBConfigIfc#setDBAdditionalParams(java.util.List)
+     * {@inheritDoc}
      */
     @Override
     public void setDBAdditionalParams(final Map<String, String> additionalParams) {
         this.config.getDbConfig().setDBAdditionalParams(additionalParams);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailHostname()
+     * {@inheritDoc}
+     */
+    @Override
+    public String getEMailHostname() {
+        return this.config.getEmailConfig().getEMailHostname();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailHostname(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailHostname(final String theHostname) {
+        this.config.getEmailConfig().setEMailHostname(theHostname);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailPort()
+     * {@inheritDoc}
+     */
+    @Override
+    public int getEMailPort() {
+        return this.config.getEmailConfig().getEMailPort();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailPort(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailPort(final int thePort) {
+        this.config.getEmailConfig().setEMailPort(thePort);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailUsername()
+     * {@inheritDoc}
+     */
+    @Override
+    public String getEMailUsername() {
+        return this.config.getEmailConfig().getEMailUsername();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailUsername(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailUsername(final String theUsername) {
+        this.config.getEmailConfig().setEMailUsername(theUsername);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailPassword()
+     * {@inheritDoc}
+     */
+    @Override
+    public String getEMailPassword() {
+        return this.config.getEmailConfig().getEMailPassword();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailPassword(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailPassword(final String thePassword) {
+        this.config.getEmailConfig().setEMailPassword(thePassword);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailUseTLS()
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getEMailUseTLS() {
+        return this.config.getEmailConfig().getEMailUseTLS();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailUseTLS(boolean)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailUseTLS(final boolean theUseTLS) {
+        this.config.getEmailConfig().setEMailUseTLS(theUseTLS);
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#getEMailSenderAddress()
+     * {@inheritDoc}
+     */
+    @Override
+    public String getEMailSenderAddress() {
+        return this.config.getEmailConfig().getEMailSenderAddress();
+    }
+
+    /**
+     * @see de.eod.jliki.config.EMailConfigIfc#setEMailSenderAddress(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void setEMailSenderAddress(final String theSenderAddress) {
+        this.config.getEmailConfig().setEMailSenderAddress(theSenderAddress);
     }
 }

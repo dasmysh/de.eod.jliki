@@ -1,5 +1,8 @@
 /**
- * Copyright (C) 2011 The jLiki Programming Team.
+ * File: Configuration.java
+ * GIT: $Id$
+ *
+ * Copyright (C) 2011 by The jLiki Programming Team.
  *
  * This file is part of jLiki.
  *
@@ -43,6 +46,8 @@ public class Configuration implements Serializable {
     private PageConfig pageConfig = new PageConfig();
     /** holds the database configuration. */
     private DBConfig dbConfig = new DBConfig();
+    /** holds the email configuration. */
+    private EMailConfig emailConfig = new EMailConfig();
 
     /** holds the database configuration. */
     //privat
@@ -53,7 +58,8 @@ public class Configuration implements Serializable {
      * @return the configuration object loaded
      * @throws IOException in case of errors
      */
-    public static Configuration loadFromFile(final String filename) throws IOException {
+    public static Configuration loadFromFile(final String filename)
+            throws IOException {
         Configuration config = null;
         final FileInputStream in = new FileInputStream(filename);
         final XMLDecoder d = new XMLDecoder(in);
@@ -111,6 +117,20 @@ public class Configuration implements Serializable {
     }
 
     /**
+     * @return the emailConfig
+     */
+    public final EMailConfig getEmailConfig() {
+        return this.emailConfig;
+    }
+
+    /**
+     * @param theEmailConfig the emailConfig to set
+     */
+    public final void setEmailConfig(final EMailConfig theEmailConfig) {
+        this.emailConfig = theEmailConfig;
+    }
+
+    /**
      * Returns the standard configuration object.<br/>
      * @return the standard configuration
      */
@@ -118,6 +138,7 @@ public class Configuration implements Serializable {
         final Configuration cfg = new Configuration();
         cfg.setPageConfig(PageConfig.getStandardPageConfig());
         cfg.setDbConfig(DBConfig.getStandardDBConfig());
+        cfg.setEmailConfig(EMailConfig.getStandardEMailConfig());
         return cfg;
     }
 }
