@@ -57,6 +57,32 @@ public final class PasswordHashUtility {
     }
 
     /**
+     * Generates a hash string (url save) from the given data.<br/>
+     * @param data the data to hash
+     * @return a string in url save format
+     */
+    public static String generateHashForUrl(final String data) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance(ALGORITHM);
+        } catch (final NoSuchAlgorithmException e) {
+            LOGGER.fatal("Hash algorithm not found: " + ALGORITHM, e);
+            return "";
+        }
+        digest.reset();
+        byte[] hashBytes;
+        try {
+            hashBytes = digest.digest(data.getBytes(ENCODING));
+        } catch (final UnsupportedEncodingException e) {
+            LOGGER.fatal("Character encoding not supported: " + ENCODING, e);
+            return "";
+        }
+
+        final String hashString = Base64.encodeBase64URLSafeString(hashBytes);
+        return hashString;
+    }
+
+    /**
      * Generates a salt for password hashing.<br/>
      * @return the salt
      */

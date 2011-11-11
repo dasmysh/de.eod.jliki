@@ -9,9 +9,10 @@ For an easy build you will need at least [Apache Maven](http://maven.apache.org/
 dependencies. To build this without Maven, the needed dependencies can be found in pom.xml.
 
 ### Database server dependency:
-jLiki needs a database server to run. For standard this will be [MySQL]()/[MariaDB]() but it should be possible to 
-replace that by any other SQL-Server. After the first run there should be a file "config/jlikiConfig.xml" in the
-base directory of your Tomcat instance. The database connection (and several other properties) can be configured there.
+jLiki needs a database server to run. For standard this will be [MySQL](http://www.mysql.com/)/
+[MariaDB](http://mariadb.org/) but it should be possible to replace that by any other SQL-Server. After the first run
+there should be a file "config/jlikiConfig.xml" in the base directory of your Tomcat instance. The database connection
+(and several other properties) can be configured there.
 
 ## Inspiration:
 jLiki is heavily inspired by [Liki - The LaTeX Wiki](http://sourceforge.net/projects/liki/) which did not fit all my

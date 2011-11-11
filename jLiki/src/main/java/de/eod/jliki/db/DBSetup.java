@@ -30,6 +30,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import de.eod.jliki.db.beans.User;
 
@@ -60,6 +63,9 @@ public class DBSetup extends GenericServlet {
         // setup database ...
         setDbManager(new DBManager(tableClasses));
 
+        // setup initial database data
+        this.ensureAdminUserInDB();
+
         this.logger.info("Finished with database setup...");
     }
 
@@ -85,4 +91,26 @@ public class DBSetup extends GenericServlet {
         DBSetup.dbManager = theDBManager;
     }
 
+    /**
+     * Tests if the admin account exists, if not it is set up.<br/>
+     */
+    private void ensureAdminUserInDB() {
+        if (getDbManager() == null) {
+            throw new IllegalStateException("Database Manager not initialized!");
+        }
+
+        final SessionFactory sf = getDbManager().getSessionFactory();
+        final Session session = sf.openSession();
+        session.beginTransaction();
+        final Query query = session.createQuery("from User where username=:username");
+        query.setString("username", "admin");
+        final boolean adminInDB = query.list().size() == 0;
+        session.getTransaction().commit();
+        session.cancelQuery();
+        session.close();
+        if (adminInDB) {
+            final User admin = new User("admin", "password", "", "", "");
+            getDbManager().saveObject(admin);
+        }
+    }
 }

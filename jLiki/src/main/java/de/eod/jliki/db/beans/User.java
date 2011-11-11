@@ -23,6 +23,7 @@
 package de.eod.jliki.db.beans;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -264,5 +265,16 @@ public class User implements Serializable {
      */
     public final void setSalt(final String theSalt) {
         this.salt = theSalt;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public final String toString() {
+        return MessageFormat.format("{0}: id={1}, username={2}, password={3}, salt={4}, email={5}, fistname={6},"
+                + " lastname={7}, active={8}, registerdate={9}, lastloggin={10}",
+                new Object[] {this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt,
+                        this.email, this.firstname, this.lastname, this.active, this.registerdate, this.lastloggin});
     }
 }
