@@ -21,7 +21,7 @@
 
   <servlet>
     <servlet-name>jLiki DBSetup Servlet</servlet-name>
-    <servlet-class>de.eod.jliki.db.DBSetup</servlet-class>
+    <servlet-class>de.eod.jliki.db.servlets.DBSetup</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>

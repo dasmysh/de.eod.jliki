@@ -23,7 +23,7 @@
  * Last changes:
  * 10.11.2011: File creation.
  */
-package de.eod.jliki.db.beans;
+package de.eod.jliki.users.dbbeans;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -277,8 +277,8 @@ public class User implements Serializable {
     @Override
     public final String toString() {
         return MessageFormat.format("{0}: id={1}, username={2}, password={3}, salt={4}, email={5}, fistname={6},"
-                + " lastname={7}, active={8}, registerdate={9}, lastloggin={10}",
-                new Object[] {this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt,
-                        this.email, this.firstname, this.lastname, this.active, this.registerdate, this.lastloggin});
+                + " lastname={7}, active={8}, registerdate={9}, lastloggin={10}", new Object[] {
+                this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt, this.email,
+                this.firstname, this.lastname, this.active, this.registerdate, this.lastloggin});
     }
 }

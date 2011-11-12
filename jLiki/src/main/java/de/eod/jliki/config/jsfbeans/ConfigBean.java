@@ -23,7 +23,7 @@
  * Last changes:
  * 06.11.2011: File creation.
  */
-package de.eod.jliki.beans;
+package de.eod.jliki.config.jsfbeans;
 
 import java.io.Serializable;
 

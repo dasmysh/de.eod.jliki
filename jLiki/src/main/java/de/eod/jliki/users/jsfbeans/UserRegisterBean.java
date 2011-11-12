@@ -23,22 +23,32 @@
  * Last changes:
  * 08.11.2011: File creation.
  */
-package de.eod.jliki.beans;
+package de.eod.jliki.users.jsfbeans;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.hibernate.validator.constraints.NotBlank;
 
-import de.eod.jliki.db.DBSetup;
-import de.eod.jliki.db.beans.User;
+import de.eod.jliki.config.ConfigManager;
+import de.eod.jliki.db.servlets.DBSetup;
+import de.eod.jliki.users.dbbeans.User;
+import de.eod.jliki.util.BeanLogger;
 import de.eod.jliki.util.Messages;
+import de.eod.jliki.util.PasswordHashUtility;
 
 /**
  * Bean that manages user registration.<br/>
@@ -51,6 +61,8 @@ public class UserRegisterBean implements Cloneable, Serializable {
 
     /** holds default serialization UID. */
     private static final long serialVersionUID = 1L;
+    /** holds the logger. */
+    private static final BeanLogger LOGGER = new BeanLogger(UserRegisterBean.class);
 
     /** holds the username. */
     // CHECKSTYLE IGNORE
@@ -65,8 +77,7 @@ public class UserRegisterBean implements Cloneable, Serializable {
     @Size(min = 6, max = 50, message = "{register.panel.invalid.password}")
     private String confirm;
     /** holds the users email. */
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$",
-            message = "{register.panel.invalid.email}")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$", message = "{register.panel.invalid.email}")
     private String email;
     /** holds the users first name. */
     @NotBlank(message = "{register.panel.invalid.firstname}")
@@ -181,10 +192,46 @@ public class UserRegisterBean implements Cloneable, Serializable {
      * Adds a new user to the jLiki database.<br/>
      */
     public final void addNewUser() {
-        final User newUser = new User(this.username, this.password, this.email,
-                this.firstname, this.lastname);
-        DBSetup.getDbManager().saveObject(newUser);
+        final User newUser = new User(this.username, this.password, this.email, this.firstname, this.lastname);
 
+        final FacesContext fc = FacesContext.getCurrentInstance();
+        final HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+        final ResourceBundle mails = ResourceBundle.getBundle("de.eod.jliki.EMailMessages", fc.getViewRoot()
+                .getLocale());
+        final String activateEMailTemplate = mails.getString("user.registration.email");
+        final StringBuffer url = request.getRequestURL();
+        final String serverUrl = url.substring(0, url.lastIndexOf("/"));
+        final String userHash = PasswordHashUtility.generateHashForUrl(newUser.toString());
+
+        final String emsLink = serverUrl + "/activate.xhtml?key=" + userHash;
+        final String emsLikiName = ConfigManager.getInstance().getPageName();
+        final String emsEMailText = MessageFormat.format(activateEMailTemplate, emsLikiName, this.firstname,
+                this.lastname, this.username, emsLink);
+
+        final String emsHost = ConfigManager.getInstance().getEMailHostname();
+        final int emsPort = ConfigManager.getInstance().getEMailPort();
+        final String emsUser = ConfigManager.getInstance().getEMailUsername();
+        final String emsPass = ConfigManager.getInstance().getEMailPassword();
+        final boolean emsTSL = ConfigManager.getInstance().getEMailUseTLS();
+        final String emsSender = ConfigManager.getInstance().getEMailSenderAddress();
+
+        final Email activateEmail = new SimpleEmail();
+        activateEmail.setHostName(emsHost);
+        activateEmail.setSmtpPort(emsPort);
+        activateEmail.setAuthentication(emsUser, emsPass);
+        activateEmail.setTLS(emsTSL);
+        try {
+            activateEmail.setFrom(emsSender);
+            activateEmail.setSubject("Activate jLiki Account");
+            activateEmail.setMsg(emsEMailText);
+            activateEmail.addTo(this.email);
+            activateEmail.send();
+        } catch (final EmailException e) {
+            LOGGER.error("Sending activation eMail failed!", e);
+            return;
+        }
+
+        DBSetup.getDbManager().saveObject(newUser);
         Messages.addFacesMessage(null, FacesMessage.SEVERITY_INFO, "message.user.registered", this.username);
     }
 }

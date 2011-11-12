@@ -23,7 +23,7 @@
  * Last changes:
  * 07.11.2011: File creation.
  */
-package de.eod.jliki.db;
+package de.eod.jliki.db.servlets;
 
 import java.io.IOException;
 
@@ -37,7 +37,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import de.eod.jliki.db.beans.User;
+import de.eod.jliki.db.DBManager;
+import de.eod.jliki.users.dbbeans.User;
 
 /**
  * Sets up the database for the jLiki.<br/>
