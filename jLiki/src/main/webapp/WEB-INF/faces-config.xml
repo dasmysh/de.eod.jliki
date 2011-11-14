@@ -16,4 +16,8 @@
       <var>msg</var>
     </resource-bundle>
   </application>
+  <validator>
+    <validator-id>captchaValidator</validator-id>
+    <validator-class>de.eod.jliki.users.servlets.CaptchaValidator</validator-class>
+  </validator>
 </faces-config>

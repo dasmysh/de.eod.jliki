@@ -28,6 +28,17 @@
     <servlet-name>jLiki DBSetup Servlet</servlet-name>
     <url-pattern>/donotgohereeverwhyshouldyou/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>jcaptcha</servlet-name>
+    <servlet-class>de.eod.jliki.users.servlets.CaptchaServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>jcaptcha</servlet-name>
+    <url-pattern>/jcaptcha</url-pattern>
+  </servlet-mapping>
+
   <context-param>
     <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
     <param-name>javax.faces.STATE_SAVING_METHOD</param-name>

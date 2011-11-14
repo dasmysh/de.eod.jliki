@@ -44,11 +44,10 @@ import org.apache.commons.mail.SimpleEmail;
 import org.hibernate.validator.constraints.NotBlank;
 
 import de.eod.jliki.config.ConfigManager;
-import de.eod.jliki.db.servlets.DBSetup;
 import de.eod.jliki.users.dbbeans.User;
+import de.eod.jliki.users.dbbeans.UserDBHelper;
 import de.eod.jliki.util.BeanLogger;
 import de.eod.jliki.util.Messages;
-import de.eod.jliki.util.PasswordHashUtility;
 
 /**
  * Bean that manages user registration.<br/>
@@ -85,6 +84,14 @@ public class UserRegisterBean implements Cloneable, Serializable {
     /** holds the users last name. */
     @NotBlank(message = "{register.panel.invalid.lastname}")
     private String lastname;
+    /** holds the captcha. */
+    @NotBlank(message = "{register.panel.invalid.captcha}")
+    private String captcha;
+    /** holds the terms of use check. */
+    @AssertTrue(message = "{register.panel.invalid.tou}")
+    private boolean termsOfUse;
+    /** holds the registered flag, it is unset if a registration failed. */
+    private boolean success = false;
 
     /**
      * Makes sure password and confirm are the same.<br/>
@@ -180,6 +187,46 @@ public class UserRegisterBean implements Cloneable, Serializable {
     }
 
     /**
+     * getter for property captcha
+     * @return returns the captcha.
+    */
+    public final String getCaptcha() {
+        return this.captcha;
+    }
+
+    /**
+     * setter for property captcha
+     * @param theCaptcha The captcha to set.
+     */
+    public final void setCaptcha(final String theCaptcha) {
+        this.captcha = theCaptcha;
+    }
+
+    /**
+     * getter for property termsOfUse
+     * @return returns the termsOfUse.
+    */
+    public final boolean isTermsOfUse() {
+        return this.termsOfUse;
+    }
+
+    /**
+     * setter for property termsOfUse
+     * @param theTermsOfUse The termsOfUse to set.
+     */
+    public final void setTermsOfUse(final boolean theTermsOfUse) {
+        this.termsOfUse = theTermsOfUse;
+    }
+
+    /**
+     * getter for property success
+     * @return returns the success.
+    */
+    public final boolean isSuccess() {
+        return this.success;
+    }
+
+    /**
      * @see java.lang.Object#clone()
      * {@inheritDoc}
      */
@@ -193,6 +240,14 @@ public class UserRegisterBean implements Cloneable, Serializable {
      */
     public final void addNewUser() {
         final User newUser = new User(this.username, this.password, this.email, this.firstname, this.lastname);
+        final String userHash = UserDBHelper.addUserToDB(newUser);
+
+        if (userHash == null) {
+            Messages.addFacesMessage(null, FacesMessage.SEVERITY_ERROR, "message.user.register.failed", this.username);
+            return;
+        }
+
+        UserRegisterBean.LOGGER.debug("Adding user: " + newUser.toString());
 
         final FacesContext fc = FacesContext.getCurrentInstance();
         final HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
@@ -201,9 +256,10 @@ public class UserRegisterBean implements Cloneable, Serializable {
         final String activateEMailTemplate = mails.getString("user.registration.email");
         final StringBuffer url = request.getRequestURL();
         final String serverUrl = url.substring(0, url.lastIndexOf("/"));
-        final String userHash = PasswordHashUtility.generateHashForUrl(newUser.toString());
 
-        final String emsLink = serverUrl + "/activate.xhtml?key=" + userHash;
+        UserRegisterBean.LOGGER.debug("Generated key for user: \"" + userHash + "\"");
+
+        final String emsLink = serverUrl + "/activate.xhtml?user=" + newUser.getUsername() + "&key=" + userHash;
         final String emsLikiName = ConfigManager.getInstance().getPageName();
         final String emsEMailText = MessageFormat.format(activateEMailTemplate, emsLikiName, this.firstname,
                 this.lastname, this.username, emsLink);
@@ -227,11 +283,20 @@ public class UserRegisterBean implements Cloneable, Serializable {
             activateEmail.addTo(this.email);
             activateEmail.send();
         } catch (final EmailException e) {
-            LOGGER.error("Sending activation eMail failed!", e);
+            UserRegisterBean.LOGGER.error("Sending activation eMail failed!", e);
             return;
         }
 
-        DBSetup.getDbManager().saveObject(newUser);
+        this.username = "";
+        this.password = "";
+        this.confirm = "";
+        this.email = "";
+        this.firstname = "";
+        this.lastname = "";
+        this.captcha = "";
+        this.termsOfUse = false;
+        this.success = true;
+
         Messages.addFacesMessage(null, FacesMessage.SEVERITY_INFO, "message.user.registered", this.username);
     }
 }

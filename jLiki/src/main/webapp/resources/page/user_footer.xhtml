@@ -10,23 +10,120 @@
       xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
   <h:head />
   <h:body>
-    <composite:interface>
-      <composite:attribute name="register_dlg_id" required="true"/>
-    </composite:interface>
+    <composite:interface />
 
     <composite:implementation>
-      <h:form id="loginForm" rendered="#{!loginBean.loggedIn}">
-        <h:inputText id="p" value="#{loginBean.userName}"/>
-        <h:inputSecret id="pw" value="#{loginBean.password}"/>
-        <h:commandButton id="submit" value="#{msg['login.button']}" action="#{loginBean.doLogon}" />
-        <div><h:message for="p" styleClass="error"/><h:message for="pw" styleClass="error"/></div>
-      </h:form>
-      <h:outputLink value="#" id="registerLink" onclick="#{rich:component(cc.attrs.register_dlg_id)}.show()">
-        <h:outputText value="#{msg['register.button']}"/>
-      </h:outputLink>
-      <h:form id="logoutForm" rendered="#{loginBean.loggedIn}">
-        <h:commandLink id="logout" value="#{msg['logout.link']}" action="#{loginBean.doLogout}"/>
-      </h:form>
+      <h:panelGroup rendered="#{!loginBean.loggedIn}" layout="block"><div>
+        <h:outputLink value="#" id="loginLink" onclick="#{rich:component('login_dlg')}.show()">
+          <h:outputText value="#{msg['login.button']}"/>
+        </h:outputLink></div>
+      </h:panelGroup>
+      <h:panelGroup rendered="#{!loginBean.loggedIn}" layout="block"><div>
+        <h:outputLink value="#" id="registerLink" onclick="#{rich:component('register_dlg')}.show()">
+          <h:outputText value="#{msg['register.button']}"/>
+        </h:outputLink></div>
+      </h:panelGroup>
+      <h:panelGroup rendered="#{loginBean.loggedIn}" layout="block"><div>
+        <h:form id="logoutForm">
+          <h:commandLink id="logout" value="#{msg['logout.link']}" action="#{loginBean.doLogout}"/>
+        </h:form></div>
+      </h:panelGroup>
+
+      <rich:popupPanel id="login_dlg" autosized="true" modal="false" moveable="false" resizeable="false">
+        <h:form id="loginForm">
+          <a4j:region>
+            <rich:messages globalOnly="true"/>
+            <h:panelGrid columns="3" styleClass="dialogPanel">
+                <h:outputText value="#{msg['login.label.username']}" />
+                <h:inputText id="p" value="#{loginBean.userName}"/>
+                <h:message for="p" styleClass="error"/>
+                <h:outputText value="#{msg['login.label.password']}" />
+                <h:inputSecret id="pw" value="#{loginBean.password}"/>
+                <h:message for="pw" styleClass="error"/>
+                <h:outputText value="#{msg['login.label.rememberme']}"/>
+                <h:selectBooleanCheckbox id="rememberme" value="#{loginBean.rememberMe}"/>
+                <h:message for="rememberme" styleClass="error"/>
+                <a4j:commandButton id="login" render="@form" value="#{msg['login.button']}"
+                    action="#{loginBean.doLogon}" oncomplete="if (#{loginBean.loggedIn}) window.location.reload(true);"/>
+                <a4j:commandButton id="loginCancel" value="#{msg['login.cancel']}" action="#{loginBean.clear}"
+                    onclick="#{rich:component('login_dlg')}.hide(); return true;" execute="@this" render="@form"/>
+                <h:outputText value=""/>
+            </h:panelGrid>
+          </a4j:region>
+        </h:form>
+      </rich:popupPanel>
+
+      <rich:popupPanel id="register_dlg" modal="true" autosized="true" resizeable="false">
+        <f:facet name="header">
+          <h:outputText value="#{msg['register.panel.header']}"/>
+        </f:facet>
+        <f:facet name="controls">
+          <h:outputLink value="#" onclick="#{rich:component('register_dlg')}.hide(); return false;">X</h:outputLink>
+        </f:facet>
+        <h:form id="registerForm">
+          <rich:graphValidator value="#{userRegisterBean}" id="gv">
+            <rich:messages for="gv"/>
+            <rich:messages globalOnly="true"/>
+            <h:panelGrid id="registerFormPanel" columns="3" styleClass="dialogPanel">
+              <h:outputLabel for="username" value="#{msg['register.panel.username']}"/>
+              <h:inputText id="username" value="#{userRegisterBean.username}"/>
+              <rich:message for="username"/>
+              <h:outputText for="password" value="#{msg['register.panel.password']}"/>
+              <h:inputSecret id="password" value="#{userRegisterBean.password}"/>
+              <rich:message for="password"/>
+              <h:outputLabel for="confpass" value="#{msg['register.panel.confirm.password']}"/>
+              <h:inputSecret id="confpass" value="#{userRegisterBean.confirm}"/>
+              <rich:message for="confpass"/>
+              <h:outputLabel for="email" value="#{msg['register.panel.email']}"/>
+              <h:inputText id="email" value="#{userRegisterBean.email}"/>
+              <rich:message for="email"/>
+              <h:outputLabel for="firstname" value="#{msg['register.panel.firstname']}"/>
+              <h:inputText id="firstname" value="#{userRegisterBean.firstname}"/>
+              <rich:message for="firstname"/>
+              <h:outputLabel for="lastname" value="#{msg['register.panel.lastname']}"/>
+              <h:inputText id="lastname" value="#{userRegisterBean.lastname}"/>
+              <rich:message for="lastname"/>
+            </h:panelGrid>
+            <a4j:outputPanel ajaxRendered="true" layout="block" styleClass="dialogPanel">
+              <h:outputLabel for="captcha" value="#{msg['register.panel.captcha']}"/><br/>
+              <img src="./jcaptcha"/><br/>
+              <h:inputText id="captcha" value="#{userRegisterBean.captcha}">
+                <f:validator validatorId="captchaValidator"/>
+              </h:inputText>
+              <rich:message for="captcha"/>
+            </a4j:outputPanel>
+            <h:panelGrid id="registerFormPanel2" columns="3" styleClass="dialogPanel">
+              <h:selectBooleanCheckbox id="tou" value="#{userRegisterBean.termsOfUse}"/>
+              <h:panelGroup>
+                <h:outputText value="#{msg['register.panel.tou']}" escape="false"/>
+                <h:outputLink value="#" id="touLink" onclick="#{rich:component('touPanel')}.show()">
+                  <h:outputText value="#{msg['register.panel.tou.link']}"/>
+                </h:outputLink>
+              </h:panelGroup>
+              <rich:message for="tou"/>
+            </h:panelGrid>
+            <a4j:commandButton value="#{msg['register.panel.register.button']}" action="#{userRegisterBean.addNewUser}"
+                 render="@form" oncomplete="if (#{userRegisterBean.success}) window.location.reload(true);"/>
+          </rich:graphValidator>
+        </h:form>
+      </rich:popupPanel>
+      
+      <rich:popupPanel id="touPanel" modal="true" autosized="true" resizeable="false" moveable="false">
+        <f:facet name="header">
+          <h:outputText value="#{msg['tou.panel.header']}"/>
+        </f:facet>
+        <f:facet name="controls">
+          <h:outputLink value="#" onclick="#{rich:component('touPanel')}.hide(); return false;">X</h:outputLink>
+        </f:facet>
+        <div class="outputTextfield">
+          <h:outputText value="#{msg['tou.text']}"/>
+        </div>
+        <div>
+          <h:outputLink value="#" id="touCloseLink" onclick="#{rich:component('touPanel')}.hide()">
+            <h:outputText value="#{msg['tou.panel.close']}"/>
+          </h:outputLink>
+        </div>
+      </rich:popupPanel>
     </composite:implementation>
   </h:body>
 </html>

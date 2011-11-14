@@ -26,12 +26,16 @@
 package de.eod.jliki.users.jsfbeans;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import de.eod.jliki.users.dbbeans.UserDBHelper;
 import de.eod.jliki.util.BeanLogger;
 
 /**
@@ -55,6 +59,15 @@ public class LoginBean implements Serializable {
     /** holds the users password. */
     @NotBlank(message = "Password may not be blank!")
     private String password = null;
+    /** holds the remember me flag. */
+    private boolean rememberMe = false;
+
+    /**
+     * Class construction.<br/>
+     */
+    public LoginBean() {
+        this.checkCookie();
+    }
 
     /**
      * @return the password
@@ -78,6 +91,14 @@ public class LoginBean implements Serializable {
     }
 
     /**
+     * setter for property isLoggedIn
+     * @param loggedIn The isLoggedIn to set.
+     */
+    public final void setLoggedIn(final boolean loggedIn) {
+        this.isLoggedIn = loggedIn;
+    }
+
+    /**
      * @return the userName
      */
     public final String getUserName() {
@@ -92,19 +113,33 @@ public class LoginBean implements Serializable {
     }
 
     /**
+     * getter for property rememberMe
+     * @return returns the rememberMe.
+    */
+    public final boolean isRememberMe() {
+        return this.rememberMe;
+    }
+
+    /**
+     * setter for property rememberMe
+     * @param theRememberMe The rememberMe to set.
+     */
+    public final void setRememberMe(final boolean theRememberMe) {
+        this.rememberMe = theRememberMe;
+    }
+
+    /**
      * try to do the logon.<br/>
      * @return always a null object
      */
     public final String doLogon() {
-        if (this.userName.equals("smaisch") && this.password.equals("test")) {
-            this.password = null;
-            this.isLoggedIn = true;
-            return null;
+        if (!UserDBHelper.loginUser(this.userName, this.password, this.rememberMe, this)) {
+            LoginBean.LOGGER.error("Login failed.");
         }
 
         this.password = null;
-        this.isLoggedIn = false;
-        LOGGER.info("Login failed.");
+        LoginBean.LOGGER.debug("User \"" + this.userName + "\" logged in.");
+
         return null;
     }
 
@@ -113,9 +148,33 @@ public class LoginBean implements Serializable {
      * @return a string indicating success or failure
      */
     public final String doLogout() {
-        this.isLoggedIn = false;
-        this.userName = null;
-        this.password = null;
+        UserDBHelper.logoutUser(this);
+
         return "";
+    }
+
+    /**
+     * Clears the login form data but does not change the login state.<br/>
+     */
+    public final void clear() {
+        this.password = null;
+
+        if (!this.isLoggedIn) {
+            this.userName = null;
+        }
+    }
+
+    /**
+     * Checks for the login cookie and logs the user in if the cookie exists.<br/>
+     */
+    private void checkCookie() {
+        final Map<String, Object> cookies = FacesContext.getCurrentInstance().getExternalContext()
+                .getRequestCookieMap();
+
+        final Cookie cookie = (Cookie) cookies.get("login");
+        if (cookie != null) {
+            UserDBHelper.loginUserWithCookie(cookie.getValue(), this);
+        }
+
     }
 }

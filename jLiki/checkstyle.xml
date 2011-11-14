@@ -45,6 +45,7 @@
     <module name="MethodLength"/>
     <module name="ParameterNumber"/>
     <module name="LineLength">
+      <property name="ignorePattern" value="^ *\* *"/>
       <property name="max" value="120"/>
     </module>
     <module name="AnonInnerLength"/>

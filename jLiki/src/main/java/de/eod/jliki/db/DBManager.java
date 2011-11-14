@@ -28,7 +28,6 @@ package de.eod.jliki.db;
 import java.util.Map;
 import java.util.Properties;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -94,13 +93,13 @@ public class DBManager {
      * Saves an object to the database.<br/>
      * @param obj the object to save
      */
-    public final void saveObject(final Object obj) {
+    /*public final void saveObject(final Object obj) {
         final Session session = this.hibSessionFactory.openSession();
         session.beginTransaction();
         session.save(obj);
         session.getTransaction().commit();
         session.close();
-    }
+    }*/
 
     /**
      * Returns the database connection.<br/>

@@ -88,7 +88,9 @@ public class User implements Serializable {
     private Date registerdate;
     /** holds the date the user last logged in. */
     @Temporal(value = TemporalType.TIMESTAMP)
-    private Date lastloggin;
+    private Date lastlogin;
+    /** holds the users login cookie id. */
+    private String cookieid;
 
     /**
      * Creates an user object.<br/>
@@ -103,7 +105,8 @@ public class User implements Serializable {
         this.lastname = "";
         this.active = ActiveState.INACTIVE;
         this.registerdate = new Date();
-        this.lastloggin = new Date();
+        this.lastlogin = new Date();
+        this.cookieid = "";
     }
 
     /**
@@ -123,7 +126,8 @@ public class User implements Serializable {
         this.lastname = theLastname;
         this.active = ActiveState.INACTIVE;
         this.registerdate = new Date();
-        this.lastloggin = new Date();
+        this.lastlogin = new Date();
+        this.cookieid = "";
 
         final byte[] byteSalt = PasswordHashUtility.generateSalt();
         this.password = PasswordHashUtility.hashPassword(thePassword, byteSalt);
@@ -243,17 +247,17 @@ public class User implements Serializable {
     }
 
     /**
-     * @return the lastloggin
+     * @return the lastlogin
      */
-    public final Date getLastloggin() {
-        return this.lastloggin;
+    public final Date getLastlogin() {
+        return this.lastlogin;
     }
 
     /**
-     * @param theLastloggin the lastloggin to set
+     * @param theLastlogin the lastlogin to set
      */
-    public final void setLastloggin(final Date theLastloggin) {
-        this.lastloggin = theLastloggin;
+    public final void setLastlogin(final Date theLastlogin) {
+        this.lastlogin = theLastlogin;
     }
 
     /**
@@ -271,14 +275,30 @@ public class User implements Serializable {
     }
 
     /**
+     * getter for property cookieid
+     * @return returns the cookieid.
+    */
+    public final String getCookieid() {
+        return this.cookieid;
+    }
+
+    /**
+     * setter for property cookieid
+     * @param theCookieId The cookieid to set.
+     */
+    public final void setCookieid(final String theCookieId) {
+        this.cookieid = theCookieId;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      * {@inheritDoc}
      */
     @Override
     public final String toString() {
         return MessageFormat.format("{0}: id={1}, username={2}, password={3}, salt={4}, email={5}, fistname={6},"
-                + " lastname={7}, active={8}, registerdate={9}, lastloggin={10}", new Object[] {
+                + " lastname={7}, active={8}, registerdate={9}, lastlogin={10}", new Object[] {
                 this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt, this.email,
-                this.firstname, this.lastname, this.active, this.registerdate, this.lastloggin});
+                this.firstname, this.lastname, this.active, this.registerdate, this.lastlogin});
     }
 }

@@ -33,12 +33,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import de.eod.jliki.db.DBManager;
 import de.eod.jliki.users.dbbeans.User;
+import de.eod.jliki.users.dbbeans.UserDBHelper;
 
 /**
  * Sets up the database for the jLiki.<br/>
@@ -65,10 +63,10 @@ public class DBSetup extends GenericServlet {
 
         final Class<?>[] tableClasses = new Class<?>[] {User.class};
         // setup database ...
-        setDbManager(new DBManager(tableClasses));
+        DBSetup.setDbManager(new DBManager(tableClasses));
 
         // setup initial database data
-        this.ensureAdminUserInDB();
+        UserDBHelper.initializeDB();
 
         this.logger.info("Finished with database setup...");
     }
@@ -85,7 +83,7 @@ public class DBSetup extends GenericServlet {
      * @return the dbManager
      */
     public static final synchronized DBManager getDbManager() {
-        return dbManager;
+        return DBSetup.dbManager;
     }
 
     /**
@@ -93,28 +91,5 @@ public class DBSetup extends GenericServlet {
      */
     private static synchronized void setDbManager(final DBManager theDBManager) {
         DBSetup.dbManager = theDBManager;
-    }
-
-    /**
-     * Tests if the admin account exists, if not it is set up.<br/>
-     */
-    private void ensureAdminUserInDB() {
-        if (getDbManager() == null) {
-            throw new IllegalStateException("Database Manager not initialized!");
-        }
-
-        final SessionFactory sf = getDbManager().getSessionFactory();
-        final Session session = sf.openSession();
-        session.beginTransaction();
-        final Query query = session.createQuery("from User where username=:username");
-        query.setString("username", "admin");
-        final boolean adminInDB = query.list().size() == 0;
-        session.getTransaction().commit();
-        session.cancelQuery();
-        session.close();
-        if (adminInDB) {
-            final User admin = new User("admin", "password", "", "", "");
-            getDbManager().saveObject(admin);
-        }
     }
 }

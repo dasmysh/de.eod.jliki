@@ -1,5 +1,5 @@
 /**
- * File: DBLayoutEnsureIfc.java
+ * File: CaptchaService.java
  * GIT: $Id$
  *
  * Copyright (C) 2011 by The jLiki Programming Team.
@@ -21,35 +21,34 @@
  *
  * Author: Sebastian Maisch
  * Last changes:
- * 07.11.2011: File creation.
+ * 12.11.2011: File creation.
  */
-package de.eod.jliki.db;
+package de.eod.jliki.users.servlets;
 
-import java.sql.Connection;
+import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
- * Interface for classes that rely on a certain table layout in database.<br/>
+ * The singleton captcha service.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public interface DBLayoutEnsureIfc {
+public final class CaptchaService {
+
+    /** holds the image captcha service. */
+    private static ImageCaptchaService instance = new DefaultManageableImageCaptchaService();
 
     /**
-     * Returns a unique name.<br/>
-     * @return the name
+     * Returns the chaptcha services instance.<br/>
+     * @return the chaptcha services instance
      */
-    String getUniqueName();
+    public static ImageCaptchaService getInstance() {
+        return CaptchaService.instance;
+    }
 
     /**
-     * Checks if the database is up to date.<br/>
-     * @param connection the connection to the database
-     * @return true if database is up to date
+     * Prevent captcha service from being constructed.<br/>
      */
-    boolean isDBUpToDate(final Connection connection);
-
-    /**
-     * Updates the database.<br/>
-     * @param connection the connection to the database
-     */
-    void updateDB(final Connection connection);
+    private CaptchaService() {
+    }
 }

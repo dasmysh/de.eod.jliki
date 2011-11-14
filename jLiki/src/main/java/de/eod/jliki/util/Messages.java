@@ -26,6 +26,7 @@
 package de.eod.jliki.util;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -56,17 +57,10 @@ public final class Messages {
      */
     public static String addFacesMessage(final String clientId, final Severity severity, final String key) {
         final FacesContext fc = FacesContext.getCurrentInstance();
-        final ResourceBundle msgs = ResourceBundle.getBundle(MESSAGES_NAME, fc.getViewRoot().getLocale());
 
-        try {
-            final String message = msgs.getString(key);
-            final FacesMessage fm = new FacesMessage(severity, message, message);
-            fc.addMessage(clientId, fm);
-            return message;
-
-        } catch (final MissingResourceException e) {
-            return '@' + key + '@';
-        }
+        final FacesMessage fm = Messages.createFacesMessage(severity, key, fc.getViewRoot().getLocale());
+        fc.addMessage(clientId, fm);
+        return fm.getDetail();
     }
 
     /**
@@ -80,15 +74,49 @@ public final class Messages {
     public static String addFacesMessage(final String clientId, final Severity severity, final String key,
             final Object... params) {
         final FacesContext fc = FacesContext.getCurrentInstance();
-        final ResourceBundle msgs = ResourceBundle.getBundle(MESSAGES_NAME, fc.getViewRoot().getLocale());
 
+        final FacesMessage fm = Messages.createFacesMessage(severity, key, fc.getViewRoot().getLocale(), params);
+        fc.addMessage(clientId, fm);
+        return fm.getDetail();
+    }
+
+    /**
+     * Creates a faces message from the message bundle.<br/>
+     * @param severity the severity of the message
+     * @param key the key of the string
+     * @param locale the locale to use
+     * @return the faces message containing the message to the key
+     */
+    public static FacesMessage createFacesMessage(final Severity severity, final String key, final Locale locale) {
+        final ResourceBundle msgs = ResourceBundle.getBundle(Messages.MESSAGES_NAME, locale);
+        String message = null;
         try {
-            final String message = MessageFormat.format(msgs.getString(key), params);
-            final FacesMessage fm = new FacesMessage(severity, message, message);
-            fc.addMessage(clientId, fm);
-            return message;
+            message = msgs.getString(key);
         } catch (final MissingResourceException e) {
-            return '@' + key + '@';
+            message = '@' + key + '@';
         }
+
+        return new FacesMessage(severity, message, message);
+    }
+
+    /**
+     * Creates a faces message from the message bundle and substitutes the parameters.<br/>
+     * @param severity the severity of the message
+     * @param key the key of the string
+     * @param locale the locale to use
+     * @param params the parameters to substitute
+     * @return the faces message containing the message substituted to the key
+     */
+    public static FacesMessage createFacesMessage(final Severity severity, final String key, final Locale locale,
+            final Object... params) {
+        final ResourceBundle msgs = ResourceBundle.getBundle(Messages.MESSAGES_NAME, locale);
+        String message = null;
+        try {
+            message = MessageFormat.format(msgs.getString(key), params);
+        } catch (final MissingResourceException e) {
+            message = '@' + key + '@';
+        }
+
+        return new FacesMessage(severity, message, message);
     }
 }

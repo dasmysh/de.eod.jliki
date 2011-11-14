@@ -53,8 +53,6 @@ public class BeanLogger {
      * @param message the message to log
      */
     public final void debug(final String message) {
-        final FacesMessage facesMsg = new FacesMessage(message, "[DEBUG] " + message);
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
         this.logger.debug(message);
     }
 
@@ -64,8 +62,6 @@ public class BeanLogger {
      * @param t the thrown exception to log
      */
     public final void debug(final String message, final Throwable t) {
-        final FacesMessage facesMsg = new FacesMessage(message, "[DEBUG] " + message);
-        FacesContext.getCurrentInstance().addMessage(null, facesMsg);
         this.logger.debug(message, t);
     }
 
