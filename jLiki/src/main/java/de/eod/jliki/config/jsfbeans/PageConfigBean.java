@@ -27,8 +27,8 @@ package de.eod.jliki.config.jsfbeans;
 
 import java.io.Serializable;
 
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 import de.eod.jliki.config.ConfigManager;
 
@@ -37,9 +37,9 @@ import de.eod.jliki.config.ConfigManager;
  *
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  */
-@ManagedBean(name = "configBean")
-@SessionScoped
-public class ConfigBean implements Serializable {
+@ManagedBean(name = "pageConfigBean")
+@ApplicationScoped
+public class PageConfigBean implements Serializable {
 
     /** holds serialization UID. */
     private static final long serialVersionUID = 1L;

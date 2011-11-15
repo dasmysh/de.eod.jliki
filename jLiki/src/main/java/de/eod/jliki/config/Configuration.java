@@ -33,11 +33,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
+import de.eod.jliki.config.jsfbeans.BaseConfigBean;
+
 /**
  * This class holds the jLiki server configuration and is able to load from/save to file.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
+@ManagedBean
+@ApplicationScoped
 public class Configuration implements Serializable {
 
     /** holds serialization UID. */
@@ -48,6 +56,9 @@ public class Configuration implements Serializable {
     private DBConfig dbConfig = new DBConfig();
     /** holds the email configuration. */
     private EMailConfig emailConfig = new EMailConfig();
+    /** holds the base configuration. */
+    @ManagedProperty(value = "#{baseConfigBean}")
+    private BaseConfigBean baseConfig;
 
     /** holds the database configuration. */
     //privat
@@ -58,8 +69,7 @@ public class Configuration implements Serializable {
      * @return the configuration object loaded
      * @throws IOException in case of errors
      */
-    public static Configuration loadFromFile(final String filename)
-            throws IOException {
+    public static Configuration loadFromFile(final String filename) throws IOException {
         Configuration config = null;
         final FileInputStream in = new FileInputStream(filename);
         final XMLDecoder d = new XMLDecoder(in);

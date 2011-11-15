@@ -28,12 +28,16 @@ package de.eod.jliki.users.dbbeans;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -91,6 +95,12 @@ public class User implements Serializable {
     private Date lastlogin;
     /** holds the users login cookie id. */
     private String cookieid;
+    /** holds the groups the user is in. */
+    @ManyToMany(cascade = {CascadeType.ALL })
+    private Set<UserGroup> groups = new HashSet<UserGroup>();
+    /** holds the permissions the user has. */
+    @ManyToMany(cascade = {CascadeType.ALL })
+    private Set<Permission> permissions = new HashSet<Permission>();
 
     /**
      * Creates an user object.<br/>
@@ -291,14 +301,47 @@ public class User implements Serializable {
     }
 
     /**
+     * getter for property groups
+     * @return returns the groups.
+    */
+    public final Set<UserGroup> getGroups() {
+        return this.groups;
+    }
+
+    /**
+     * setter for property groups
+     * @param theGroups The groups to set.
+     */
+    public final void setGroups(final Set<UserGroup> theGroups) {
+        this.groups = theGroups;
+    }
+
+    /**
+     * getter for property permissions
+     * @return returns the permissions.
+    */
+    public final Set<Permission> getPermissions() {
+        return this.permissions;
+    }
+
+    /**
+     * setter for property permissions
+     * @param thePermissions The permissions to set.
+     */
+    public final void setPermissions(final Set<Permission> thePermissions) {
+        this.permissions = thePermissions;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      * {@inheritDoc}
      */
     @Override
     public final String toString() {
         return MessageFormat.format("{0}: id={1}, username={2}, password={3}, salt={4}, email={5}, fistname={6},"
-                + " lastname={7}, active={8}, registerdate={9}, lastlogin={10}", new Object[] {
-                this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt, this.email,
-                this.firstname, this.lastname, this.active, this.registerdate, this.lastlogin});
+                + " lastname={7}, active={8}, registerdate={9}, lastlogin={10}, salt={11}, cookieid={12}",
+                new Object[] {this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt,
+                        this.email, this.firstname, this.lastname, this.active, this.registerdate, this.lastlogin,
+                        this.salt, this.cookieid });
     }
 }

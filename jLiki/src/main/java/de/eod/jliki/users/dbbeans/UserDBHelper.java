@@ -42,6 +42,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import de.eod.jliki.db.servlets.DBSetup;
+import de.eod.jliki.users.dbbeans.Permission.PermissionType;
 import de.eod.jliki.users.dbbeans.User.ActiveState;
 import de.eod.jliki.users.jsfbeans.LoginBean;
 import de.eod.jliki.util.PasswordHashUtility;
@@ -301,7 +302,23 @@ public final class UserDBHelper {
      * Initializes the database for user management.<br/>
      */
     public static void initializeDB() {
+        final UserGroup admins = new UserGroup("admins");
+        admins.getPermissions().add(new Permission("base", "config", PermissionType.READWRITER));
+        admins.getPermissions().add(new Permission("page", "config", PermissionType.READWRITER));
+        admins.getPermissions().add(new Permission("db", "config", PermissionType.READWRITER));
+        admins.getPermissions().add(new Permission("email", "config", PermissionType.READWRITER));
+
+        final UserGroup users = new UserGroup("users");
+        // TODO: set standard user permissions
+
         final User admin = new User("admin", "password", "", "", "");
+        admin.getGroups().add(admins);
+        admin.getGroups().add(users);
+        admin.getPermissions().add(new Permission("base", "config", PermissionType.OWNER));
+        admin.getPermissions().add(new Permission("page", "config", PermissionType.OWNER));
+        admin.getPermissions().add(new Permission("db", "config", PermissionType.OWNER));
+        admin.getPermissions().add(new Permission("email", "config", PermissionType.OWNER));
+
         admin.setActive(ActiveState.ACTIVE);
         UserDBHelper.addUserToDB(admin);
 

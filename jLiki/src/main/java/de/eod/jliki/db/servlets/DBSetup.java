@@ -35,8 +35,10 @@ import javax.servlet.ServletResponse;
 import org.apache.log4j.Logger;
 
 import de.eod.jliki.db.DBManager;
+import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.UserDBHelper;
+import de.eod.jliki.users.dbbeans.UserGroup;
 
 /**
  * Sets up the database for the jLiki.<br/>
@@ -61,7 +63,7 @@ public class DBSetup extends GenericServlet {
 
         this.logger.info("Starting with database setup...");
 
-        final Class<?>[] tableClasses = new Class<?>[] {User.class};
+        final Class<?>[] tableClasses = new Class<?>[] {User.class, UserGroup.class, Permission.class };
         // setup database ...
         DBSetup.setDbManager(new DBManager(tableClasses));
 

@@ -13,11 +13,11 @@
   <h:head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="description" content="Liki, the open source Wiki for LaTeX documents"/>
-    <meta name="keywords" content="#{configBean.keywords}"/>
+    <meta name="keywords" content="#{pageConfigBean.keywords}"/>
     <link rel="stylesheet" type="text/css" href="./css/liki.css"/>
     <link rel="stylesheet" type="text/css" href="./css/formElements.css"/>
     <link rel="stylesheet" type="text/css" href="./css/dialog.css"/>
-    <title><h:outputText value="#{configBean.pageTitle}"/></title>
+    <title><h:outputText value="#{pageConfigBean.pageTitle}"/></title>
   </h:head>
   <h:body>
     <ui:composition template="resources/page/page_template.xhtml">

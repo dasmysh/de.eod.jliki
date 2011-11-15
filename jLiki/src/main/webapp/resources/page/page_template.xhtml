@@ -11,11 +11,11 @@
   <h:head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="description" content="Liki, the open source Wiki for LaTeX documents"/>
-    <meta name="keywords" content="#{configBean.keywords}"/>
+    <meta name="keywords" content="#{pageConfigBean.keywords}"/>
     <link rel="stylesheet" type="text/css" href="./css/liki.css"/>
     <link rel="stylesheet" type="text/css" href="./css/formElements.css"/>
     <link rel="stylesheet" type="text/css" href="./css/dialog.css"/>
-    <title><h:outputText value="#{configBean.pageTitle}"/></title>
+    <title><h:outputText value="#{pageConfigBean.pageTitle}"/></title>
   </h:head>
   <h:body>
     <div class="header">
@@ -27,8 +27,8 @@
           Liki - The <span class="latex">L<span class="A">A</span>T<span class="E">E</span>X</span> Wiki
         </a>
       </div>
-      <div class="page_title"><h:outputText value="#{configBean.pageName}"/></div>
-      <div class="page_subtitle"><h:outputText value="#{configBean.pageSubtitle}"/></div>
+      <div class="page_title"><h:outputText value="#{pageConfigBean.pageName}"/></div>
+      <div class="page_subtitle"><h:outputText value="#{pageConfigBean.pageSubtitle}"/></div>
       <rich:messages fatalClass="fatal" errorClass="error" warnClass="warn" infoClass="info" globalOnly="true"/><br/>
       <ui:insert name="content">Main Content</ui:insert>
     </div>
