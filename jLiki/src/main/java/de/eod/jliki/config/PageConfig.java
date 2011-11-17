@@ -32,10 +32,11 @@ import java.io.Serializable;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class PageConfig implements PageConfigIfc, Serializable {
+public class PageConfig implements Serializable {
 
     /** holds serialization UID. */
     private static final long serialVersionUID = 1L;
+
     /** holds the pages keywords. */
     private String keywords = "";
     /** holds the pages title. */
@@ -46,75 +47,88 @@ public class PageConfig implements PageConfigIfc, Serializable {
     private String pageSubtitle = "";
 
     /**
-     * @see de.eod.jliki.config.PageConfigIfc#getPageKeywords()
-     * {@inheritDoc}
+     * Class construction.<br/>
      */
-    @Override
-    public final String getPageKeywords() {
+    public PageConfig() {
+    }
+
+    /**
+     * Class construction.<br/>
+     * @param theKeywords the pages keywords
+     * @param thePageTitle the pages title
+     * @param thePageName the pages name
+     * @param thePageSubtitle the pages subtitle
+     */
+    public PageConfig(final String theKeywords, final String thePageTitle, final String thePageName,
+            final String thePageSubtitle) {
+        this.keywords = theKeywords;
+        this.pageTitle = thePageTitle;
+        this.pageName = thePageName;
+        this.pageSubtitle = thePageSubtitle;
+    }
+
+    /**
+     * getter for property keywords
+     * @return returns the keywords.
+    */
+    public final String getKeywords() {
         return this.keywords;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#setPageKeywords(java.lang.String)
-     * {@inheritDoc}
+     * setter for property keywords
+     * @param theKeywords The keywords to set.
      */
-    @Override
-    public final void setPageKeywords(final String theKeywords) {
+    public final void setKeywords(final String theKeywords) {
         this.keywords = theKeywords;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#getPageTitle()
-     * {@inheritDoc}
-     */
-    @Override
+     * getter for property pageTitle
+     * @return returns the pageTitle.
+    */
     public final String getPageTitle() {
         return this.pageTitle;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#setPageTitle(java.lang.String)
-     * {@inheritDoc}
+     * setter for property pageTitle
+     * @param thePageTitle The pageTitle to set.
      */
-    @Override
-    public final void setPageTitle(final String title) {
-        this.pageTitle = title;
+    public final void setPageTitle(final String thePageTitle) {
+        this.pageTitle = thePageTitle;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#getPageName()
-     * {@inheritDoc}
-     */
-    @Override
+     * getter for property pageName
+     * @return returns the pageName.
+    */
     public final String getPageName() {
         return this.pageName;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#setPageName(java.lang.String)
-     * {@inheritDoc}
+     * setter for property pageName
+     * @param thePageName The pageName to set.
      */
-    @Override
-    public final void setPageName(final String name) {
-        this.pageName = name;
+    public final void setPageName(final String thePageName) {
+        this.pageName = thePageName;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#getPageSubtitle()
-     * {@inheritDoc}
-     */
-    @Override
+     * getter for property pageSubtitle
+     * @return returns the pageSubtitle.
+    */
     public final String getPageSubtitle() {
         return this.pageSubtitle;
     }
 
     /**
-     * @see de.eod.jliki.config.ConfigurationIfc#setPageSubtitle(java.lang.String)
-     * {@inheritDoc}
+     * setter for property pageSubtitle
+     * @param thePageSubtitle The pageSubtitle to set.
      */
-    @Override
-    public final void setPageSubtitle(final String subtitle) {
-        this.pageSubtitle = subtitle;
+    public final void setPageSubtitle(final String thePageSubtitle) {
+        this.pageSubtitle = thePageSubtitle;
     }
 
     /**
@@ -122,11 +136,8 @@ public class PageConfig implements PageConfigIfc, Serializable {
      * @return the standard configuration
      */
     public static PageConfig getStandardPageConfig() {
-        final PageConfig cfg = new PageConfig();
-        cfg.setPageKeywords("jLiki,Latex");
-        cfg.setPageTitle("jLiki - The LaTeX Wiki in Java");
-        cfg.setPageName("Page title");
-        cfg.setPageSubtitle("Page subtitle");
+        final PageConfig cfg = new PageConfig("jLiki,Latex", "jLiki - The LaTeX Wiki in Java", "Page title",
+                "Page subtitle");
         return cfg;
     }
 }

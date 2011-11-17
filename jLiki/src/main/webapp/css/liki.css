@@ -16,27 +16,27 @@ body{
 
 a:active {
   text-decoration: none;
-  color: #5555cc
+  color: #5555cc !important;
 }
 
 a:hover {
-  color: #aa2222;
+  color: #aa2222 !important;
   text-decoration: none;
 }
 
 a:visited {
-  color: #5555cc;
+  color: #5555cc !important;
   text-decoration: none;
 }
 
 a:link {
   text-decoration: none;
-  color: #5555cc
+  color: #5555cc !important;
 }
 
 a:focus {
   text-decoration: none;
-  color: #5555cc
+  color: #5555cc !important;
 }
 
 
@@ -128,7 +128,7 @@ span.latex span.E {
 }
 
 .fatal {
-  color: #8A0808;
+  color: #8A0808 !important;
   text-align: left;
   font-size: 11px;
   font-weight: 700;
@@ -136,7 +136,7 @@ span.latex span.E {
 }
 
 .error {
-  color: #f00;
+  color: #f00 !important;
   text-align: left;
   font-size: 11px;
   font-weight: 700;
@@ -144,7 +144,7 @@ span.latex span.E {
 }
 
 .warn {
-  color: #DF7401;
+  color: #DF7401 !important;
   text-align: left;
   font-size: 11px;
   font-weight: 700;
@@ -152,7 +152,7 @@ span.latex span.E {
 }
 
 .info {
-  color: #088A29;
+  color: #088A29 !important;
   text-align: left;
   font-size: 11px;
   font-weight: 700;

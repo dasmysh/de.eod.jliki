@@ -23,31 +23,20 @@
  * Last changes:
  * 15.11.2011: File creation.
  */
-package de.eod.jliki.config.jsfbeans;
+package de.eod.jliki.config;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-
-import org.apache.log4j.Logger;
-
-import de.eod.jliki.config.ConfigManager;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
 
 /**
- * JSF bean for the jLikis base configuration.<br/>
+ * The jLikis base configuration.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  */
-@ManagedBean(name = "baseConfigBean")
-@ViewScoped
-public class BaseConfigBean implements Serializable {
+public class BaseConfig implements Serializable {
 
     /** holds serialVersionUID. */
     private static final long serialVersionUID = 1L;
-
-    /** holds the logger. */
-    private static final transient Logger LOGGER = Logger.getLogger(BaseConfigBean.class);
 
     /** holds the documents base directory. */
     private String docBasedir;
@@ -67,9 +56,29 @@ public class BaseConfigBean implements Serializable {
     /**
      * Class construction.<br/>
      */
-    public BaseConfigBean() {
-        this.refreshBaseConfig();
-        BaseConfigBean.LOGGER.debug("Creating new baseConfigBean object!");
+    public BaseConfig() {
+    }
+
+    /**
+     * Class construction.<br/>
+     * @param theDocBasedir the document base directory
+     * @param theFileLockTime the file lock time
+     * @param theNumRecentChanged the max number of recent changes
+     * @param theUserDocrootPermission the standard user docroot permission
+     * @param theUserFilePermission the standard user permission for every file
+     * @param thePubCompiledDocPermission the permission on compiled documents for public users
+     * @param thePubFilePermission the permission on files for public users
+     */
+    public BaseConfig(final String theDocBasedir, final int theFileLockTime, final int theNumRecentChanged,
+            final PermissionType theUserDocrootPermission, final PermissionType theUserFilePermission,
+            final PermissionType thePubCompiledDocPermission, final PermissionType thePubFilePermission) {
+        this.docBasedir = theDocBasedir;
+        this.fileLockTime = theFileLockTime;
+        this.numRecentChanges = theNumRecentChanged;
+        this.userDocrootPermission = theUserDocrootPermission;
+        this.userFilePermission = theUserFilePermission;
+        this.pubCompiledDocPermission = thePubCompiledDocPermission;
+        this.pubFilePermission = thePubFilePermission;
     }
 
     /**
@@ -185,32 +194,14 @@ public class BaseConfigBean implements Serializable {
     }
 
     /**
-     * Refreshes the base configuration bean with the global configuration.<br/>
+     * Returns the standard base configuration.<br/>
+     * @return the standard base configuration
      */
-    public final void refreshBaseConfig() {
-        this.docBasedir = ConfigManager.getInstance().getConfig().getBaseConfig().getDocBasedir();
-        this.fileLockTime = ConfigManager.getInstance().getConfig().getBaseConfig().getFileLockTime();
-        this.numRecentChanges = ConfigManager.getInstance().getConfig().getBaseConfig().getNumRecentChanges();
-        this.userDocrootPermission = ConfigManager.getInstance().getConfig().getBaseConfig().getUserDocrootPermission();
-        this.userFilePermission = ConfigManager.getInstance().getConfig().getBaseConfig().getUserFilePermission();
-        this.pubCompiledDocPermission = ConfigManager.getInstance().getConfig().getBaseConfig()
-                .getPubCompiledDocPermission();
-        this.pubFilePermission = ConfigManager.getInstance().getConfig().getBaseConfig().getPubFilePermission();
-    }
-
-    /**
-     * Saves the base configuration the the global configuration object and writes it to file.<br/>
-     */
-    public final void saveBaseConfig() {
-        ConfigManager.getInstance().getConfig().getBaseConfig().setDocBasedir(this.docBasedir);
-        ConfigManager.getInstance().getConfig().getBaseConfig().setFileLockTime(this.fileLockTime);
-        ConfigManager.getInstance().getConfig().getBaseConfig().setNumRecentChanges(this.numRecentChanges);
-        ConfigManager.getInstance().getConfig().getBaseConfig().setUserDocrootPermission(this.userDocrootPermission);
-        ConfigManager.getInstance().getConfig().getBaseConfig().setUserFilePermission(this.userFilePermission);
-        ConfigManager.getInstance().getConfig().getBaseConfig()
-                .setPubCompiledDocPermission(this.pubCompiledDocPermission);
-        ConfigManager.getInstance().getConfig().getBaseConfig().setPubFilePermission(this.pubFilePermission);
-        ConfigManager.getInstance().saveConfig();
-        BaseConfigBean.LOGGER.info("Wrote base configuration!");
+    public static BaseConfig getStandardBaseConfig() {
+        final int standardFileLock = 10;
+        final int standardChanges = 20;
+        final BaseConfig cfg = new BaseConfig("./documents", standardFileLock, standardChanges, PermissionType.READER,
+                PermissionType.READER, PermissionType.READER, PermissionType.NOTHING);
+        return cfg;
     }
 }

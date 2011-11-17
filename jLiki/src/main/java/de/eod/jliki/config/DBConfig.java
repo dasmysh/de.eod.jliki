@@ -34,10 +34,11 @@ import java.util.Map;
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class DBConfig implements DBConfigIfc, Serializable {
+public class DBConfig implements Serializable {
 
     /** holds serialization UID. */
     private static final long serialVersionUID = 1L;
+
     /** holds the database driver. */
     private String driver = "";
     /** holds the database url. */
@@ -52,111 +53,123 @@ public class DBConfig implements DBConfigIfc, Serializable {
     private Map<String, String> additionalParams = null;
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBDriver()
-     * {@inheritDoc}
+     * Class construction, making sure there is only one instance.<br/>
      */
-    @Override
-    public final String getDBDriver() {
+    public DBConfig() {
+    }
+
+    /**
+     * Class construction (without instance management).<br/>
+     * @param theDriver the database driver
+     * @param theUrl the database url
+     * @param theDBName the database name
+     * @param theUser the dbs user
+     * @param thePassword the users password
+     * @param theAdditionalParams additional parameters
+     */
+    public DBConfig(final String theDriver, final String theUrl, final String theDBName, final String theUser,
+            final String thePassword, final Map<String, String> theAdditionalParams) {
+        this.driver = theDriver;
+        this.url = theUrl;
+        this.dbName = theDBName;
+        this.user = theUser;
+        this.password = thePassword;
+        this.setAdditionalParams(theAdditionalParams);
+    }
+
+    /**
+     * getter for property driver
+     * @return returns the driver.
+    */
+    public final String getDriver() {
         return this.driver;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBDriver(java.lang.String)
-     * {@inheritDoc}
+     * setter for property driver
+     * @param theDriver The driver to set.
      */
-    @Override
-    public final void setDBDriver(final String theDriver) {
+    public final void setDriver(final String theDriver) {
         this.driver = theDriver;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBUrl()
-     * {@inheritDoc}
-     */
-    @Override
-    public final String getDBUrl() {
+     * getter for property url
+     * @return returns the url.
+    */
+    public final String getUrl() {
         return this.url;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBUrl(java.lang.String)
-     * {@inheritDoc}
+     * setter for property url
+     * @param theUrl The url to set.
      */
-    @Override
-    public final void setDBUrl(final String theUrl) {
+    public final void setUrl(final String theUrl) {
         this.url = theUrl;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBDatabaseName()
-     * {@inheritDoc}
-     */
-    @Override
-    public final String getDBDatabaseName() {
+     * getter for property dbName
+     * @return returns the dbName.
+    */
+    public final String getDbName() {
         return this.dbName;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBDatabaseName(java.lang.String)
-     * {@inheritDoc}
+     * setter for property dbName
+     * @param theDBName The dbName to set.
      */
-    @Override
-    public final void setDBDatabaseName(final String theDBName) {
+    public final void setDbName(final String theDBName) {
         this.dbName = theDBName;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBUsername()
-     * {@inheritDoc}
-     */
-    @Override
-    public final String getDBUsername() {
+     * getter for property user
+     * @return returns the user.
+    */
+    public final String getUser() {
         return this.user;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBUsername(java.lang.String)
-     * {@inheritDoc}
+     * setter for property user
+     * @param theUser The user to set.
      */
-    @Override
-    public final void setDBUsername(final String theUser) {
+    public final void setUser(final String theUser) {
         this.user = theUser;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBPassword()
-     * {@inheritDoc}
-     */
-    @Override
-    public final String getDBPassword() {
+     * getter for property password
+     * @return returns the password.
+    */
+    public final String getPassword() {
         return this.password;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBPassword(java.lang.String)
-     * {@inheritDoc}
+     * setter for property password
+     * @param thePassword The password to set.
      */
-    @Override
-    public final void setDBPassword(final String thePassword) {
+    public final void setPassword(final String thePassword) {
         this.password = thePassword;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#getDBAdditionalParams()
-     * {@inheritDoc}
-     */
-    @Override
-    public final Map<String, String> getDBAdditionalParams() {
+     * getter for property additionalParams
+     * @return returns the additionalParams.
+    */
+    public final Map<String, String> getAdditionalParams() {
         return this.additionalParams;
     }
 
     /**
-     * @see de.eod.jliki.config.DBConfigIfc#setDBAdditionalParams(java.util.List)
-     * {@inheritDoc}
+     * setter for property additionalParams
+     * @param theAdditionalParams The additionalParams to set.
      */
-    @Override
-    public final void setDBAdditionalParams(
-            final Map<String, String> theAdditionalParams) {
+    public final void setAdditionalParams(final Map<String, String> theAdditionalParams) {
         this.additionalParams = theAdditionalParams;
     }
 
@@ -165,19 +178,13 @@ public class DBConfig implements DBConfigIfc, Serializable {
      * @return the standard configuration
      */
     public static DBConfig getStandardDBConfig() {
-        final DBConfig cfg = new DBConfig();
-        cfg.setDBDriver("com.mysql.jdbc.Driver");
-        cfg.setDBUrl("jdbc:mysql://localhost:3306");
-        cfg.setDBDatabaseName("jLiki");
-        cfg.setDBUsername("jLiki");
-        cfg.setDBPassword("jLikiPassword");
-
         /** @see http://docs.jboss.org/hibernate/core/3.6/javadocs/org/hibernate/dialect/package-frame.html */
         final Map<String, String> additionalParams = new HashMap<String, String>();
-        additionalParams.put("hibernate.dialect",
-                "org.hibernate.dialect.MySQLDialect");
+        additionalParams.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         additionalParams.put("hibernate.hbm2ddl.auto", "update");
-        cfg.setDBAdditionalParams(additionalParams);
+
+        final DBConfig cfg = new DBConfig("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306", "jLiki", "jLiki",
+                "jLikiPassword", additionalParams);
         return cfg;
     }
 }

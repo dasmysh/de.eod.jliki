@@ -29,6 +29,7 @@
       </div>
       <div class="page_title"><h:outputText value="#{pageConfigBean.pageName}"/></div>
       <div class="page_subtitle"><h:outputText value="#{pageConfigBean.pageSubtitle}"/></div>
+      <h:messages globalOnly="true"/><br/>
       <rich:messages fatalClass="fatal" errorClass="error" warnClass="warn" infoClass="info" globalOnly="true"/><br/>
       <ui:insert name="content">Main Content</ui:insert>
     </div>

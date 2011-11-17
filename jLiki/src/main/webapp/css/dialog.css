@@ -7,6 +7,7 @@
 
 .dialogPanel {
   text-align: left;
+  vertical-align: top;
   padding: 20px
 }
 
@@ -14,4 +15,62 @@
   width: 400px;
   text-align: left;
   padding: 20px;
+}
+
+.dialogHeading {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  padding-top: 20px;
+}
+
+.columnDialog {
+  
+}
+
+.columnDialogColumn {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.columnDialogPanel {
+  text-align: left;
+  vertical-align: top;
+  padding: 0px;
+  padding-bottom: 20px;
+}
+
+.propertiesTableHeader {
+  padding: 0px !important;
+}
+
+.rf-dt-ftr-c {
+  padding: 0px !important;
+}
+
+.propertiesTableColumn {
+  padding: 0px !important;
+}
+
+.propertiesTableR1 {
+  padding: 0px !important;
+  background-color: #E0E0D0;
+}
+
+.propertiesTableR2 {
+  padding: 0px !important;
+}
+
+.tableCreateButton {
+  text-align: left !important;
+  vertical-align: middle !important;
+  float: left;
+  top: 2px;
+  position: relative;
+}
+
+.tableDataScroller {
+  text-align: center;
 }

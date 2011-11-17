@@ -23,7 +23,7 @@
  * Last changes:
  * 14.11.2011: File creation.
  */
-package de.eod.jliki.users.dbbeans;
+package de.eod.jliki.users.utils;
 
 import java.util.Calendar;
 import java.util.Iterator;
@@ -35,6 +35,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import de.eod.jliki.db.servlets.DBSetup;
+import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.User.ActiveState;
 
 /**

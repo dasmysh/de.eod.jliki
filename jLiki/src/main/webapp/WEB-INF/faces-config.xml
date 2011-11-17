@@ -15,6 +15,14 @@
       <base-name>de.eod.jliki.ApplicationResources</base-name>
       <var>msg</var>
     </resource-bundle>
+    <resource-bundle>
+      <base-name>de.eod.jliki.users.LoginResources</base-name>
+      <var>loginMsg</var>
+    </resource-bundle>
+    <resource-bundle>
+      <base-name>de.eod.jliki.config.ConfigResources</base-name>
+      <var>configMsg</var>
+    </resource-bundle>
   </application>
   <validator>
     <validator-id>captchaValidator</validator-id>

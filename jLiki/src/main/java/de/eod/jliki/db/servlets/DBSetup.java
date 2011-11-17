@@ -37,8 +37,8 @@ import org.apache.log4j.Logger;
 import de.eod.jliki.db.DBManager;
 import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.User;
-import de.eod.jliki.users.dbbeans.UserDBHelper;
 import de.eod.jliki.users.dbbeans.UserGroup;
+import de.eod.jliki.users.utils.UserDBHelper;
 
 /**
  * Sets up the database for the jLiki.<br/>

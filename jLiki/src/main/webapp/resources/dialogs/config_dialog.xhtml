@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   Copyright (C) 2011 The jLiki Programming Team.
+   This file is part of jLiki.
+   For license see /LICENSE
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+  <h:head />
+  <h:body>
+    <composite:interface/>
+
+    <composite:implementation>
+      <h:panelGroup rendered="#{loginBean.viewConfigDlg}" layout="block"><div>
+        <h:outputLink value="#" id="configLink" onclick="#{rich:component('config_dlg')}.show()">
+          <h:outputText value="#{configMsg['config.link']}"/>
+        </h:outputLink></div>
+      </h:panelGroup>
+
+      <rich:popupPanel id="config_dlg" width="650" autosized="true" modal="true"
+                       moveable="false" resizeable="false" rendered="#{loginBean.viewConfigDlg}">
+        <f:facet name="header">
+          <h:outputText value="#{configMsg['config.dialog.heading']}"/>
+        </f:facet>
+        <f:facet name="controls">
+          <h:outputLink value="#" onclick="#{rich:component('config_dlg')}.hide(); return false;">X</h:outputLink>
+        </f:facet>
+        <rich:tabPanel switchType="client">
+          <rich:tab header="#{configMsg['config.dialog.baseconfig.heading']}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('READER')}">
+            <h:form id="baseConfigForm">
+              <div class="dialogHeading"><h:outputText value="#{configMsg['config.dialog.baseconfig.heading']}"/></div>
+              <rich:messages globalOnly="true"/>
+              <h:panelGrid columns="3" styleClass="columnDialogPanel">
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.docbasedir']}"/>
+                <h:inputText id="docbasedir" value="#{baseConfigBean.docBasedir}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{baseConfigBean.docBasedir}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="docbasedir"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.filelocktime']}"/>
+                <h:inputText id="filelocktime" value="#{baseConfigBean.fileLockTime}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{baseConfigBean.fileLockTime}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="filelocktime"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.numrecentchanges']}"/>
+                <h:inputText id="numrecentchanges" value="#{baseConfigBean.numRecentChanges}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{baseConfigBean.numRecentChanges}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="numrecentchanges"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.userdocrootpermission']}"/>
+                <h:selectOneMenu id="userdocrootpermission" value="#{baseConfigBean.userDocrootPermission}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                                 var="permissionType"
+                                 itemValue="#{permissionType}"
+                                 itemLabel="#{configMsg[permissionType.name()]}"/>
+                </h:selectOneMenu>
+                <h:outputText value="#{configMsg[baseConfigBean.userDocrootPermission.name()]}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="userdocrootpermission"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.userfilepermission']}"/>
+                <h:selectOneMenu id="userfilepermission" value="#{baseConfigBean.userFilePermission}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                                 var="permissionType"
+                                 itemValue="#{permissionType}"
+                                 itemLabel="#{configMsg[permissionType.name()]}"/>
+                </h:selectOneMenu>
+                <h:outputText value="#{configMsg[baseConfigBean.userFilePermission.name()]}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="userfilepermission"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.pubcompileddocpermission']}"/>
+                <h:selectOneMenu id="pubcompileddocpermission" value="#{baseConfigBean.pubCompiledDocPermission}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                                 var="permissionType"
+                                 itemValue="#{permissionType}"
+                                 itemLabel="#{configMsg[permissionType.name()]}"/>
+                </h:selectOneMenu>
+                <h:outputText value="#{configMsg[baseConfigBean.pubCompiledDocPermission.name()]}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="pubcompileddocpermission"/>
+                <h:outputText value="#{configMsg['config.dialog.baseconfig.label.pubfilepermission']}"/>
+                <h:selectOneMenu id="pubfilepermission" value="#{baseConfigBean.pubFilePermission}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                                 var="permissionType"
+                                 itemValue="#{permissionType}"
+                                 itemLabel="#{configMsg[permissionType.name()]}"/>
+                </h:selectOneMenu>
+                <h:outputText value="#{configMsg[baseConfigBean.pubFilePermission.name()]}"
+                    rendered="#{loginBean.configPermissions['base'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="pubfilepermission"/>
+              </h:panelGrid>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.save']}"
+                  render="@form" action="#{baseConfigBean.saveBaseConfig()}"
+                  rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.cancel']}" execute="@this"
+                  render="@form" onclick="#{rich:component('config_dlg')}.hide(); return true;"
+                  action="#{baseConfigBean.refreshBaseConfig()}"
+                  rendered="#{loginBean.configPermissions['base'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+            </h:form>
+          </rich:tab>
+          <rich:tab header="#{configMsg['config.dialog.emailconfig.heading']}"
+              rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('READER')}">
+            <h:form id="emailConfigForm">
+              <div class="dialogHeading"><h:outputText value="#{configMsg['config.dialog.emailconfig.heading']}"/></div>
+              <rich:messages globalOnly="true"/>
+              <h:panelGrid columns="3" styleClass="columnDialogPanel">
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.hostname']}"/>
+                <h:inputText id="emailCfgHostname" value="#{emailConfigBean.hostname}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{emailConfigBean.hostname}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgHostname"/>
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.port']}"/>
+                <h:inputText id="emailCfgPort" value="#{emailConfigBean.port}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{emailConfigBean.port}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgPort"/>
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.username']}"/>
+                <h:inputText id="emailCfgUsername" value="#{emailConfigBean.username}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{emailConfigBean.username}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgUsername"/>
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.password']}"/>
+                <h:inputText id="emailCfgPassword" value="#{emailConfigBean.password}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{emailConfigBean.password}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgPassword"/>
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.usetls']}"/>
+                <h:selectBooleanCheckbox id="emailCfgUseTLS" value="#{emailConfigBean.useTLS}"
+                    disabled="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgUseTLS"/>
+                <h:outputText value="#{configMsg['config.dialog.emailconfig.label.sender']}"/>
+                <h:inputText id="emailCfgSender" value="#{emailConfigBean.senderAddress}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{emailConfigBean.senderAddress}"
+                    rendered="#{loginBean.configPermissions['email'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="emailCfgSender"/>
+              </h:panelGrid>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.save']}"
+                  render="@form" action="#{emailConfigBean.saveEMailConfig()}"
+                  rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.cancel']}" execute="@this"
+                  render="@form" onclick="#{rich:component('config_dlg')}.hide(); return true;"
+                  action="#{emailConfigBean.refreshEMailConfig()}"
+                  rendered="#{loginBean.configPermissions['email'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+            </h:form>
+          </rich:tab>
+          <rich:tab header="#{configMsg['config.dialog.pageconfig.heading']}"
+              rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('READER')}">
+            <h:form id="pageConfigForm">
+              <div class="dialogHeading"><h:outputText value="#{configMsg['config.dialog.pageconfig.heading']}"/></div>
+              <rich:messages globalOnly="true"/>
+              <h:panelGrid columns="3" styleClass="columnDialogPanel">
+                <h:outputText value="#{configMsg['config.dialog.pageconfig.label.pagetitle']}"/>
+                <h:inputText id="inppagetitle" value="#{pageConfigBean.pageTitle}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{pageConfigBean.pageTitle}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="inppagetitle"/>
+                <h:outputText value="#{configMsg['config.dialog.pageconfig.label.pagename']}"/>
+                <h:inputText id="inppagename" value="#{pageConfigBean.pageName}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{pageConfigBean.pageName}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="inppagename"/>
+                <h:outputText value="#{configMsg['config.dialog.pageconfig.label.pagesubtitle']}"/>
+                <h:inputText id="inppagesubtitle" value="#{pageConfigBean.pageSubtitle}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{pageConfigBean.pageSubtitle}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="inppagesubtitle"/>
+                <h:outputText value="#{configMsg['config.dialog.pageconfig.label.keywords']}"/>
+                <h:inputText id="inpkeywords" value="#{pageConfigBean.keywords}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{pageConfigBean.keywords}"
+                    rendered="#{loginBean.configPermissions['page'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="inpkeywords"/>
+              </h:panelGrid>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.save']}"
+                  render="@form" action="#{pageConfigBean.savePageConfig()}"
+                  rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.cancel']}" execute="@this"
+                  render="@form" onclick="#{rich:component('config_dlg')}.hide(); return true;"
+                  action="#{pageConfigBean.refreshPageConfig()}"
+                  rendered="#{loginBean.configPermissions['page'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+            </h:form>
+          </rich:tab>
+          <rich:tab header="#{configMsg['config.dialog.dbconfig.heading']}"
+              rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('READER')}">
+            <h:form id="dbConfigForm">
+              <div class="dialogHeading"><h:outputText value="#{configMsg['config.dialog.dbconfig.heading']}"/></div>
+              <rich:messages globalOnly="true"/>
+              <h:panelGrid columns="3" styleClass="columnDialogPanel">
+                <h:outputText value="#{configMsg['config.dialog.dbconfig.label.driver']}"/>
+                <h:inputText id="dbdriver" value="#{dbConfigBean.driver}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{dbConfigBean.driver}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="dbdriver"/>
+                <h:outputText value="#{configMsg['config.dialog.dbconfig.label.url']}"/>
+                <h:inputText id="dburl" value="#{dbConfigBean.url}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{dbConfigBean.url}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="dburl"/>
+                <h:outputText value="#{configMsg['config.dialog.dbconfig.label.dbname']}"/>
+                <h:inputText id="dbname" value="#{dbConfigBean.dbName}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText  value="#{dbConfigBean.dbName}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="dbname"/>
+                <h:outputText value="#{configMsg['config.dialog.dbconfig.label.user']}"/>
+                <h:inputText id="dbuser" value="#{dbConfigBean.user}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{dbConfigBean.user}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="dbuser"/>
+                <h:outputText value="#{configMsg['config.dialog.dbconfig.label.password']}"/>
+                <h:inputText id="dbpassword" value="#{dbConfigBean.password}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+                <h:outputText value="#{dbConfigBean.password}"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() lt permissionTypeBean.ordinal('WRITER')}"/>
+                <rich:message for="dbpassword"/>
+              </h:panelGrid>
+              <rich:dataTable value="#{dbConfigBean.additionalParamsList}" var="item" iterationStatusVar="it"
+                              id="dbAdditionalParamsTable" rows="5" captionClass="propertiesTableHeader"
+                              rowClasses="propertiesTableR0,propertiesTableR1" headerClass="propertiesTableHeader"
+                              columnClasses="propertiesTableColumn,propertiesTableColumn,propertiesTableColumn,propertiesTableColumn"
+                              footerClass="propertiesTableHeader">
+                <f:facet name="caption">
+                  <h:outputText value="#{configMsg['config.dialog.dbconfig.label.addparams']}"/>
+                </f:facet>
+                <rich:column headerClass="propertiesTableHeader">
+                  <f:facet name="header">
+                    <h:outputText value="#{configMsg['config.dialog.dbconfig.addtable.key']}"/>
+                  </f:facet>
+                  <h:outputText value="#{item.key}" rendered="#{not item.value.newCreated}"/>
+                  <h:inputText value="#{item.key}" rendered="#{item.value.newCreated}"/>
+                </rich:column>
+                <rich:column headerClass="propertiesTableHeader">
+                  <f:facet name="header">
+                    <h:outputText value="#{configMsg['config.dialog.dbconfig.addtable.value']}"/>
+                  </f:facet>
+                  <h:outputText value="#{item.value.value}" rendered="#{not item.value.editable}"/>
+                  <h:inputText value="#{item.value.value}" rendered="#{item.value.editable}"/>
+                </rich:column>
+                <rich:column headerClass="propertiesTableHeader"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <a4j:commandLink execute="@this" render="dbAdditionalParamsTable"
+                                   action="#{dbConfigBean.editAddParamEntryAction(item)}"
+                                   rendered="#{not (item.value.editable || item.value.newCreated)}">
+                    <h:graphicImage value="/images/edit.gif" alt="#{configMsg['config.dialog.dbconfig.addtable.edit']}"/>
+                  </a4j:commandLink>
+                  <a4j:commandLink render="dbAdditionalParamsTable" execute="dbAdditionalParamsTable"
+                                   action="#{dbConfigBean.saveAddParamEntryAction(item)}"
+                                   rendered="#{item.value.editable || item.value.newCreated}">
+                    <h:graphicImage value="/images/apply.gif" alt="#{configMsg['config.dialog.dbconfig.addtable.apply']}"/>
+                  </a4j:commandLink>
+                </rich:column>
+                <rich:column headerClass="propertiesTableHeader"
+                    rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                  <a4j:commandLink execute="@this" render="dbAdditionalParamsTable"
+                                   action="#{dbConfigBean.deleteAddParamEntryAction(item)}">
+                    <h:graphicImage value="/images/delete.gif" alt="#{configMsg['config.dialog.dbconfig.addtable.delete']}"/>
+                  </a4j:commandLink>
+                </rich:column>
+                <f:facet name="footer" styleClass="propertiesTableHeader">
+                  <a4j:commandLink execute="@this" render="dbAdditionalParamsTable" styleClass="tableCreateButton"
+                                   action="#{dbConfigBean.createAddParamEntryAction()}"
+                                   rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}">
+                    <h:graphicImage value="/images/create.gif" alt="#{configMsg['config.dialog.dbconfig.addtable.add']}"
+                                    styleClass="tableCreateButton"/>
+                  </a4j:commandLink>
+                  <rich:dataScroller for="dbAdditionalParamsTable" />
+                </f:facet>
+              </rich:dataTable>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.save']}"
+                  render="@form" action="#{dbConfigBean.saveDBConfig()}"
+                  rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.cancel']}" execute="@this"
+                  render="@form" onclick="#{rich:component('config_dlg')}.hide(); return true;"
+                  action="#{dbConfigBean.refreshDBConfig()}"
+                  rendered="#{loginBean.configPermissions['db'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+            </h:form>
+          </rich:tab>
+          <rich:tab header="#{configMsg['config.dialog.latexconfig.heading']}"
+              rendered="#{loginBean.configPermissions['latex'].ordinal() >= permissionTypeBean.ordinal('READER')}">
+            <h:form id="latexConfigForm">
+              <div class="dialogHeading"><h:outputText value="#{configMsg['config.dialog.latexconfig.heading']}"/></div>
+              <h:panelGrid columns="3" styleClass="columnDialogPanel">
+              </h:panelGrid>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.save']}"
+                  render="@form" action="#{latexConfigBean.saveLatexConfig()}"
+                  rendered="#{loginBean.configPermissions['latex'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+              <a4j:commandButton value="#{configMsg['config.dialog.buttons.cancel']}" execute="@this"
+                  render="@form" onclick="#{rich:component('config_dlg')}.hide(); return true;"
+                  action="#{latexConfigBean.refreshLatexConfig()}"
+                  rendered="#{loginBean.configPermissions['latex'].ordinal() >= permissionTypeBean.ordinal('WRITER')}"/>
+            </h:form>
+          </rich:tab>
+        </rich:tabPanel>
+      </rich:popupPanel>
+    </composite:implementation>
+  </h:body>
+</html>

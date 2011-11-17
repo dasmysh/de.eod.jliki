@@ -35,7 +35,10 @@ import javax.servlet.http.Cookie;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import de.eod.jliki.users.dbbeans.UserDBHelper;
+import de.eod.jliki.users.dbbeans.Permission;
+import de.eod.jliki.users.dbbeans.Permission.PermissionType;
+import de.eod.jliki.users.utils.PermissionCategoryMap;
+import de.eod.jliki.users.utils.UserDBHelper;
 import de.eod.jliki.util.BeanLogger;
 
 /**
@@ -61,11 +64,21 @@ public class LoginBean implements Serializable {
     private String password = null;
     /** holds the remember me flag. */
     private boolean rememberMe = false;
+    /** holds the highest permission for configuration the user has. */
+    private PermissionType configPermission = PermissionType.NOTHING;
+    /** holds the map with all configuration related permissions. */
+    private final PermissionCategoryMap configPermissions;
 
     /**
      * Class construction.<br/>
      */
     public LoginBean() {
+        this.configPermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_CONFIG);
+        this.configPermissions.put("base", PermissionType.NOTHING);
+        this.configPermissions.put("email", PermissionType.NOTHING);
+        this.configPermissions.put("page", PermissionType.NOTHING);
+        this.configPermissions.put("db", PermissionType.NOTHING);
+        this.configPermissions.put("latex", PermissionType.NOTHING);
         this.checkCookie();
     }
 
@@ -129,6 +142,58 @@ public class LoginBean implements Serializable {
     }
 
     /**
+     * getter for property configPermission
+     * @return returns the configPermission.
+    */
+    public final PermissionType getConfigPermission() {
+        return this.configPermission;
+    }
+
+    /**
+     * setter for property configPermission
+     * @param theConfigPermission The configPermission to set.
+     */
+    public final void setConfigPermission(final Permission theConfigPermission) {
+        this.configPermission = this.configPermissions.put(theConfigPermission);
+    }
+
+    /**
+     * getter for property configPermissions
+     * @return returns the configPermissions.
+    */
+    public final PermissionCategoryMap getConfigPermissions() {
+        return this.configPermissions;
+    }
+
+    /**
+     * Returns if the configuration dialog is viewed or not.<br/>
+     * @return true if the config dialog is to be shown
+     */
+    public final boolean getViewConfigDlg() {
+        return this.configPermission.ordinal() >= PermissionType.READER.ordinal();
+    }
+
+    /**
+     * Clears the config bean.<br/>
+     */
+    public final void clear() {
+        this.password = null;
+
+        if (!this.isLoggedIn) {
+            this.userName = null;
+            this.clearPermissions();
+        }
+    }
+
+    /**
+     * Clears all permission this bean has.<br/>
+     */
+    public final void clearPermissions() {
+        this.configPermission = PermissionType.NOTHING;
+        this.configPermissions.clearPermissions();
+    }
+
+    /**
      * try to do the logon.<br/>
      * @return always a null object
      */
@@ -151,17 +216,6 @@ public class LoginBean implements Serializable {
         UserDBHelper.logoutUser(this);
 
         return "";
-    }
-
-    /**
-     * Clears the login form data but does not change the login state.<br/>
-     */
-    public final void clear() {
-        this.password = null;
-
-        if (!this.isLoggedIn) {
-            this.userName = null;
-        }
     }
 
     /**

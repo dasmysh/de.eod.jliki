@@ -23,19 +23,31 @@
  * Last changes:
  * 11.11.2011: File creation.
  */
-package de.eod.jliki.config;
+package de.eod.jliki.config.jsfbeans;
 
 import java.io.Serializable;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
+import org.apache.log4j.Logger;
+
+import de.eod.jliki.config.ConfigManager;
 
 /**
  * This class holds the configuration of the used email server.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-public class EMailConfig implements Serializable {
+@ManagedBean(name = "emailConfigBean")
+@ViewScoped
+public class EMailConfigBean implements Serializable {
 
     /** holds serialization UID. */
     private static final long serialVersionUID = 1L;
+
+    /** holds the logger. */
+    private static final transient Logger LOGGER = Logger.getLogger(EMailConfigBean.class);
 
     /** holds the email server hostname. */
     private String hostname = "";
@@ -53,26 +65,9 @@ public class EMailConfig implements Serializable {
     /**
      * Class construction.<br/>
      */
-    public EMailConfig() {
-    }
-
-    /**
-     * Class construction (without instance management).<br/>
-     * @param theHostname the email servers hostname
-     * @param thePort the servers port
-     * @param theUsername the email servers user
-     * @param thePassword the users password
-     * @param theUseTLS uses the server tls?
-     * @param theSenderAddress the senders address
-     */
-    public EMailConfig(final String theHostname, final int thePort, final String theUsername, final String thePassword,
-            final boolean theUseTLS, final String theSenderAddress) {
-        this.hostname = theHostname;
-        this.port = thePort;
-        this.username = theUsername;
-        this.password = thePassword;
-        this.useTLS = theUseTLS;
-        this.senderAddress = theSenderAddress;
+    public EMailConfigBean() {
+        this.refreshEMailConfig();
+        EMailConfigBean.LOGGER.debug("Creating new emailConfigBean object!");
     }
 
     /**
@@ -172,11 +167,28 @@ public class EMailConfig implements Serializable {
     }
 
     /**
-     * Generates a standard configuration for email server.<br/>
-     * @return the new configuration
+     * Refreshes the email configuration bean with the global configuration.<br/>
      */
-    public static EMailConfig getStandardEMailConfig() {
-        final EMailConfig cfg = new EMailConfig("hostname", 1, "username", "password", true, "email@address.com");
-        return cfg;
+    public final void refreshEMailConfig() {
+        this.hostname = ConfigManager.getInstance().getConfig().getEmailConfig().getHostname();
+        this.port = ConfigManager.getInstance().getConfig().getEmailConfig().getPort();
+        this.username = ConfigManager.getInstance().getConfig().getEmailConfig().getUsername();
+        this.password = ConfigManager.getInstance().getConfig().getEmailConfig().getPassword();
+        this.useTLS = ConfigManager.getInstance().getConfig().getEmailConfig().isUseTLS();
+        this.senderAddress = ConfigManager.getInstance().getConfig().getEmailConfig().getSenderAddress();
+    }
+
+    /**
+     * Saves the email configuration the the global configuration object and writes it to file.<br/>
+     */
+    public final void saveEMailConfig() {
+        ConfigManager.getInstance().getConfig().getEmailConfig().setHostname(this.hostname);
+        ConfigManager.getInstance().getConfig().getEmailConfig().setPort(this.port);
+        ConfigManager.getInstance().getConfig().getEmailConfig().setUsername(this.username);
+        ConfigManager.getInstance().getConfig().getEmailConfig().setPassword(this.password);
+        ConfigManager.getInstance().getConfig().getEmailConfig().setUseTLS(this.useTLS);
+        ConfigManager.getInstance().getConfig().getEmailConfig().setSenderAddress(this.senderAddress);
+        ConfigManager.getInstance().saveConfig();
+        EMailConfigBean.LOGGER.info("Wrote base configuration!");
     }
 }

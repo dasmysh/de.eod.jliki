@@ -50,12 +50,13 @@ public class DBManager {
      * @param tableClasses the classes (with annotations) that can be stored in the database
      */
     public DBManager(final Class<?>[] tableClasses) {
-        final String jdbcDriver = ConfigManager.getInstance().getDBDriver();
-        final String dbUrl = ConfigManager.getInstance().getDBUrl();
-        final String dbName = ConfigManager.getInstance().getDBDatabaseName();
-        final String dbUser = ConfigManager.getInstance().getDBUsername();
-        final String dbPass = ConfigManager.getInstance().getDBPassword();
-        final Map<String, String> addParams = ConfigManager.getInstance().getDBAdditionalParams();
+        final String jdbcDriver = ConfigManager.getInstance().getConfig().getDbConfig().getDriver();
+        final String dbUrl = ConfigManager.getInstance().getConfig().getDbConfig().getUrl();
+        final String dbName = ConfigManager.getInstance().getConfig().getDbConfig().getDbName();
+        final String dbUser = ConfigManager.getInstance().getConfig().getDbConfig().getUser();
+        final String dbPass = ConfigManager.getInstance().getConfig().getDbConfig().getPassword();
+        final Map<String, String> addParams = ConfigManager.getInstance().getConfig().getDbConfig()
+                .getAdditionalParams();
 
         String connectUrl = dbUrl;
         if (!dbUrl.endsWith("/")) {

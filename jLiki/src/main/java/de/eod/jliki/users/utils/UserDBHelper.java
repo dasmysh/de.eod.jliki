@@ -23,7 +23,7 @@
  * Last changes:
  * 13.11.2011: File creation.
  */
-package de.eod.jliki.users.dbbeans;
+package de.eod.jliki.users.utils;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -42,8 +42,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import de.eod.jliki.db.servlets.DBSetup;
+import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
+import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.User.ActiveState;
+import de.eod.jliki.users.dbbeans.UserGroup;
 import de.eod.jliki.users.jsfbeans.LoginBean;
 import de.eod.jliki.util.PasswordHashUtility;
 
@@ -126,25 +129,33 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        final Query query = session.createQuery("select user from User as user where user.username = :username");
-        query.setString("username", username);
+        final Query userQuery = session.createQuery("select user from User as user where user.username = :username");
+        userQuery.setString("username", username);
 
         User dbUser = null;
         boolean didActivate = false;
-        final Iterator<?> it = query.iterate();
-        if (query.iterate().hasNext()) {
+        final Iterator<?> it = userQuery.iterate();
+        if (it.hasNext()) {
             dbUser = (User) it.next();
             final String dbUserHash = PasswordHashUtility.generateHashForUrl(dbUser.toString());
-            if (userHash.equals(dbUserHash)) {
+            if (userHash.equals(dbUserHash) && dbUser.getActive() == ActiveState.INACTIVE) {
                 didActivate = true;
                 dbUser.setActive(ActiveState.ACTIVE);
             }
         }
 
+        final Query groupQuery = session.createQuery("select group from usergroup where group.groupname = :groupname");
+        groupQuery.setString("groupname", "users");
+
+        UserGroup users = null;
+        final Iterator<?> grpIt = groupQuery.iterate();
+        if (grpIt.hasNext() && didActivate && dbUser != null) {
+            users = (UserGroup) grpIt.next();
+            dbUser.getGroups().add(users);
+        }
+
         if (dbUser != null && didActivate) {
-            userLogin.setUserName(username);
-            userLogin.setLoggedIn(true);
-            dbUser.setLastlogin(new Date());
+            UserDBHelper.loginUser(dbUser, didActivate, false, userLogin, session);
         }
 
         trx.commit();
@@ -159,10 +170,11 @@ public final class UserDBHelper {
      * @param passedLogin did the user pass the login test?
      * @param rememberMe will the user stay logged in?
      * @param userLogin the login object
+     * @param session the hibernate session for further queries
      * @return true if the user was logged in
      */
     private static boolean loginUser(final User dbUser, final boolean passedLogin, final boolean rememberMe,
-            final LoginBean userLogin) {
+            final LoginBean userLogin, final Session session) {
         boolean didLogin = false;
         if (passedLogin && dbUser.getActive() == ActiveState.ACTIVE) {
             didLogin = true;
@@ -187,6 +199,20 @@ public final class UserDBHelper {
             cookie = new Cookie("login", "");
             cookie.setMaxAge(0);
             dbUser.setCookieid("");
+        }
+
+        // find permissions ...
+        for (final Permission perm : dbUser.getPermissions()) {
+            if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
+                userLogin.setConfigPermission(perm);
+            }
+        }
+        for (final UserGroup grp : dbUser.getGroups()) {
+            for (final Permission perm : grp.getPermissions()) {
+                if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
+                    userLogin.setConfigPermission(perm);
+                }
+            }
         }
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance()
@@ -222,7 +248,7 @@ public final class UserDBHelper {
 
         final boolean passedLogin = PasswordHashUtility.verifyPassword(pass, dbUser.getPassword(),
                 Base64.decodeBase64(dbUser.getSalt()));
-        final boolean didLogin = UserDBHelper.loginUser(dbUser, passedLogin, rememberMe, userLogin);
+        final boolean didLogin = UserDBHelper.loginUser(dbUser, passedLogin, rememberMe, userLogin, session);
 
         trx.commit();
         session.close();
@@ -254,7 +280,7 @@ public final class UserDBHelper {
             passedLogin = false;
         }
 
-        final boolean didLogin = UserDBHelper.loginUser(dbUser, passedLogin, true, userLogin);
+        final boolean didLogin = UserDBHelper.loginUser(dbUser, passedLogin, true, userLogin, session);
 
         trx.commit();
         session.close();
@@ -284,8 +310,10 @@ public final class UserDBHelper {
         session.close();
 
         userLogin.setLoggedIn(false);
-        userLogin.setUserName(null);
         userLogin.setPassword(null);
+        userLogin.setRememberMe(false);
+        userLogin.setUserName(null);
+        userLogin.clearPermissions();
 
         if (userLogin.isRememberMe()) {
             final HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance()
@@ -303,10 +331,8 @@ public final class UserDBHelper {
      */
     public static void initializeDB() {
         final UserGroup admins = new UserGroup("admins");
-        admins.getPermissions().add(new Permission("base", "config", PermissionType.READWRITER));
-        admins.getPermissions().add(new Permission("page", "config", PermissionType.READWRITER));
-        admins.getPermissions().add(new Permission("db", "config", PermissionType.READWRITER));
-        admins.getPermissions().add(new Permission("email", "config", PermissionType.READWRITER));
+        admins.getPermissions().add(
+                new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.READWRITER));
 
         final UserGroup users = new UserGroup("users");
         // TODO: set standard user permissions
@@ -314,10 +340,7 @@ public final class UserDBHelper {
         final User admin = new User("admin", "password", "", "", "");
         admin.getGroups().add(admins);
         admin.getGroups().add(users);
-        admin.getPermissions().add(new Permission("base", "config", PermissionType.OWNER));
-        admin.getPermissions().add(new Permission("page", "config", PermissionType.OWNER));
-        admin.getPermissions().add(new Permission("db", "config", PermissionType.OWNER));
-        admin.getPermissions().add(new Permission("email", "config", PermissionType.OWNER));
+        admin.getPermissions().add(new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.OWNER));
 
         admin.setActive(ActiveState.ACTIVE);
         UserDBHelper.addUserToDB(admin);

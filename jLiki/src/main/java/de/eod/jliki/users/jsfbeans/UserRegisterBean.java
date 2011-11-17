@@ -45,7 +45,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import de.eod.jliki.config.ConfigManager;
 import de.eod.jliki.users.dbbeans.User;
-import de.eod.jliki.users.dbbeans.UserDBHelper;
+import de.eod.jliki.users.utils.UserDBHelper;
 import de.eod.jliki.util.BeanLogger;
 import de.eod.jliki.util.Messages;
 
@@ -260,16 +260,16 @@ public class UserRegisterBean implements Cloneable, Serializable {
         UserRegisterBean.LOGGER.debug("Generated key for user: \"" + userHash + "\"");
 
         final String emsLink = serverUrl + "/activate.xhtml?user=" + newUser.getUsername() + "&key=" + userHash;
-        final String emsLikiName = ConfigManager.getInstance().getPageName();
+        final String emsLikiName = ConfigManager.getInstance().getConfig().getPageConfig().getPageName();
         final String emsEMailText = MessageFormat.format(activateEMailTemplate, emsLikiName, this.firstname,
                 this.lastname, this.username, emsLink);
 
-        final String emsHost = ConfigManager.getInstance().getEMailHostname();
-        final int emsPort = ConfigManager.getInstance().getEMailPort();
-        final String emsUser = ConfigManager.getInstance().getEMailUsername();
-        final String emsPass = ConfigManager.getInstance().getEMailPassword();
-        final boolean emsTSL = ConfigManager.getInstance().getEMailUseTLS();
-        final String emsSender = ConfigManager.getInstance().getEMailSenderAddress();
+        final String emsHost = ConfigManager.getInstance().getConfig().getEmailConfig().getHostname();
+        final int emsPort = ConfigManager.getInstance().getConfig().getEmailConfig().getPort();
+        final String emsUser = ConfigManager.getInstance().getConfig().getEmailConfig().getUsername();
+        final String emsPass = ConfigManager.getInstance().getConfig().getEmailConfig().getPassword();
+        final boolean emsTSL = ConfigManager.getInstance().getConfig().getEmailConfig().isUseTLS();
+        final String emsSender = ConfigManager.getInstance().getConfig().getEmailConfig().getSenderAddress();
 
         final Email activateEmail = new SimpleEmail();
         activateEmail.setHostName(emsHost);

@@ -33,35 +33,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-
-import de.eod.jliki.config.jsfbeans.BaseConfigBean;
-
 /**
  * This class holds the jLiki server configuration and is able to load from/save to file.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  *
  */
-@ManagedBean
-@ApplicationScoped
 public class Configuration implements Serializable {
 
     /** holds serialization UID. */
     private static final long serialVersionUID = 1L;
-    /** holds the page configuration. */
-    private PageConfig pageConfig = new PageConfig();
-    /** holds the database configuration. */
-    private DBConfig dbConfig = new DBConfig();
-    /** holds the email configuration. */
-    private EMailConfig emailConfig = new EMailConfig();
-    /** holds the base configuration. */
-    @ManagedProperty(value = "#{baseConfigBean}")
-    private BaseConfigBean baseConfig;
 
+    /** holds the page configuration. */
+    private PageConfig pageConfig = null;
     /** holds the database configuration. */
-    //privat
+    private DBConfig dbConfig = null;
+    /** holds the email configuration. */
+    private EMailConfig emailConfig = null;
+    /** holds the base configuration. */
+    private BaseConfig baseConfig = null;
+    /** holds the latex configuration. */
+    private LatexConfig latexConfig = null;
 
     /**
      * Loads the configuration from file.<br/>
@@ -141,6 +132,38 @@ public class Configuration implements Serializable {
     }
 
     /**
+     * getter for property baseConfig
+     * @return returns the baseConfig.
+    */
+    public final BaseConfig getBaseConfig() {
+        return this.baseConfig;
+    }
+
+    /**
+     * setter for property baseConfig
+     * @param theBaseConfig The baseConfig to set.
+     */
+    public final void setBaseConfig(final BaseConfig theBaseConfig) {
+        this.baseConfig = theBaseConfig;
+    }
+
+    /**
+     * getter for property latexConfig
+     * @return returns the latexConfig.
+    */
+    public final LatexConfig getLatexConfig() {
+        return this.latexConfig;
+    }
+
+    /**
+     * setter for property latexConfig
+     * @param theLatexConfig The latexConfig to set.
+     */
+    public final void setLatexConfig(final LatexConfig theLatexConfig) {
+        this.latexConfig = theLatexConfig;
+    }
+
+    /**
      * Returns the standard configuration object.<br/>
      * @return the standard configuration
      */
@@ -149,6 +172,8 @@ public class Configuration implements Serializable {
         cfg.setPageConfig(PageConfig.getStandardPageConfig());
         cfg.setDbConfig(DBConfig.getStandardDBConfig());
         cfg.setEmailConfig(EMailConfig.getStandardEMailConfig());
+        cfg.setBaseConfig(BaseConfig.getStandardBaseConfig());
+        cfg.setLatexConfig(LatexConfig.getStandardLatexConfig());
         return cfg;
     }
 }

@@ -15,17 +15,17 @@
     <composite:implementation>
       <h:panelGroup rendered="#{!loginBean.loggedIn}" layout="block"><div>
         <h:outputLink value="#" id="loginLink" onclick="#{rich:component('login_dlg')}.show()">
-          <h:outputText value="#{msg['login.button']}"/>
+          <h:outputText value="#{loginMsg['login.button']}"/>
         </h:outputLink></div>
       </h:panelGroup>
       <h:panelGroup rendered="#{!loginBean.loggedIn}" layout="block"><div>
         <h:outputLink value="#" id="registerLink" onclick="#{rich:component('register_dlg')}.show()">
-          <h:outputText value="#{msg['register.button']}"/>
+          <h:outputText value="#{loginMsg['register.button']}"/>
         </h:outputLink></div>
       </h:panelGroup>
       <h:panelGroup rendered="#{loginBean.loggedIn}" layout="block"><div>
         <h:form id="logoutForm">
-          <h:commandLink id="logout" value="#{msg['logout.link']}" action="#{loginBean.doLogout}"/>
+          <h:commandLink id="logout" value="#{loginMsg['logout.link']}" action="#{loginBean.doLogout}"/>
         </h:form></div>
       </h:panelGroup>
 
@@ -34,18 +34,18 @@
           <a4j:region>
             <rich:messages globalOnly="true"/>
             <h:panelGrid columns="3" styleClass="dialogPanel">
-                <h:outputText value="#{msg['login.label.username']}" />
+                <h:outputText value="#{loginMsg['login.label.username']}" />
                 <h:inputText id="p" value="#{loginBean.userName}"/>
                 <h:message for="p" styleClass="error"/>
-                <h:outputText value="#{msg['login.label.password']}" />
+                <h:outputText value="#{loginMsg['login.label.password']}" />
                 <h:inputSecret id="pw" value="#{loginBean.password}"/>
                 <h:message for="pw" styleClass="error"/>
-                <h:outputText value="#{msg['login.label.rememberme']}"/>
+                <h:outputText value="#{loginMsg['login.label.rememberme']}"/>
                 <h:selectBooleanCheckbox id="rememberme" value="#{loginBean.rememberMe}"/>
                 <h:message for="rememberme" styleClass="error"/>
-                <a4j:commandButton id="login" render="@form" value="#{msg['login.button']}"
+                <a4j:commandButton id="login" render="@form" value="#{loginMsg['login.button']}"
                     action="#{loginBean.doLogon}" oncomplete="if (#{loginBean.loggedIn}) window.location.reload(true);"/>
-                <a4j:commandButton id="loginCancel" value="#{msg['login.cancel']}" action="#{loginBean.clear}"
+                <a4j:commandButton id="loginCancel" value="#{loginMsg['login.cancel']}" action="#{loginBean.clear}"
                     onclick="#{rich:component('login_dlg')}.hide(); return true;" execute="@this" render="@form"/>
                 <h:outputText value=""/>
             </h:panelGrid>
@@ -55,7 +55,7 @@
 
       <rich:popupPanel id="register_dlg" modal="true" autosized="true" resizeable="false">
         <f:facet name="header">
-          <h:outputText value="#{msg['register.panel.header']}"/>
+          <h:outputText value="#{loginMsg['register.panel.header']}"/>
         </f:facet>
         <f:facet name="controls">
           <h:outputLink value="#" onclick="#{rich:component('register_dlg')}.hide(); return false;">X</h:outputLink>
@@ -65,27 +65,27 @@
             <rich:messages for="gv"/>
             <rich:messages globalOnly="true"/>
             <h:panelGrid id="registerFormPanel" columns="3" styleClass="dialogPanel">
-              <h:outputLabel for="username" value="#{msg['register.panel.username']}"/>
+              <h:outputLabel for="username" value="#{loginMsg['register.panel.username']}"/>
               <h:inputText id="username" value="#{userRegisterBean.username}"/>
               <rich:message for="username"/>
-              <h:outputText for="password" value="#{msg['register.panel.password']}"/>
+              <h:outputText for="password" value="#{loginMsg['register.panel.password']}"/>
               <h:inputSecret id="password" value="#{userRegisterBean.password}"/>
               <rich:message for="password"/>
-              <h:outputLabel for="confpass" value="#{msg['register.panel.confirm.password']}"/>
+              <h:outputLabel for="confpass" value="#{loginMsg['register.panel.confirm.password']}"/>
               <h:inputSecret id="confpass" value="#{userRegisterBean.confirm}"/>
               <rich:message for="confpass"/>
-              <h:outputLabel for="email" value="#{msg['register.panel.email']}"/>
+              <h:outputLabel for="email" value="#{loginMsg['register.panel.email']}"/>
               <h:inputText id="email" value="#{userRegisterBean.email}"/>
               <rich:message for="email"/>
-              <h:outputLabel for="firstname" value="#{msg['register.panel.firstname']}"/>
+              <h:outputLabel for="firstname" value="#{loginMsg['register.panel.firstname']}"/>
               <h:inputText id="firstname" value="#{userRegisterBean.firstname}"/>
               <rich:message for="firstname"/>
-              <h:outputLabel for="lastname" value="#{msg['register.panel.lastname']}"/>
+              <h:outputLabel for="lastname" value="#{loginMsg['register.panel.lastname']}"/>
               <h:inputText id="lastname" value="#{userRegisterBean.lastname}"/>
               <rich:message for="lastname"/>
             </h:panelGrid>
             <a4j:outputPanel ajaxRendered="true" layout="block" styleClass="dialogPanel">
-              <h:outputLabel for="captcha" value="#{msg['register.panel.captcha']}"/><br/>
+              <h:outputLabel for="captcha" value="#{loginMsg['register.panel.captcha']}"/><br/>
               <img src="./jcaptcha"/><br/>
               <h:inputText id="captcha" value="#{userRegisterBean.captcha}">
                 <f:validator validatorId="captchaValidator"/>
@@ -95,14 +95,14 @@
             <h:panelGrid id="registerFormPanel2" columns="3" styleClass="dialogPanel">
               <h:selectBooleanCheckbox id="tou" value="#{userRegisterBean.termsOfUse}"/>
               <h:panelGroup>
-                <h:outputText value="#{msg['register.panel.tou']}" escape="false"/>
+                <h:outputText value="#{loginMsg['register.panel.tou']}" escape="false"/>
                 <h:outputLink value="#" id="touLink" onclick="#{rich:component('touPanel')}.show()">
-                  <h:outputText value="#{msg['register.panel.tou.link']}"/>
+                  <h:outputText value="#{loginMsg['register.panel.tou.link']}"/>
                 </h:outputLink>
               </h:panelGroup>
               <rich:message for="tou"/>
             </h:panelGrid>
-            <a4j:commandButton value="#{msg['register.panel.register.button']}" action="#{userRegisterBean.addNewUser}"
+            <a4j:commandButton value="#{loginMsg['register.panel.register.button']}" action="#{userRegisterBean.addNewUser}"
                  render="@form" oncomplete="if (#{userRegisterBean.success}) window.location.reload(true);"/>
           </rich:graphValidator>
         </h:form>
@@ -110,17 +110,17 @@
       
       <rich:popupPanel id="touPanel" modal="true" autosized="true" resizeable="false" moveable="false">
         <f:facet name="header">
-          <h:outputText value="#{msg['tou.panel.header']}"/>
+          <h:outputText value="#{loginMsg['tou.panel.header']}"/>
         </f:facet>
         <f:facet name="controls">
           <h:outputLink value="#" onclick="#{rich:component('touPanel')}.hide(); return false;">X</h:outputLink>
         </f:facet>
         <div class="outputTextfield">
-          <h:outputText value="#{msg['tou.text']}"/>
+          <h:outputText value="#{loginMsg['tou.text']}"/>
         </div>
         <div>
           <h:outputLink value="#" id="touCloseLink" onclick="#{rich:component('touPanel')}.hide()">
-            <h:outputText value="#{msg['tou.panel.close']}"/>
+            <h:outputText value="#{loginMsg['tou.panel.close']}"/>
           </h:outputLink>
         </div>
       </rich:popupPanel>

@@ -32,7 +32,7 @@ import javax.faces.bean.RequestScoped;
 
 import org.apache.log4j.Logger;
 
-import de.eod.jliki.users.dbbeans.UserDBHelper;
+import de.eod.jliki.users.utils.UserDBHelper;
 
 /**
  * JSF Bean for checking the user activation.<br/>
