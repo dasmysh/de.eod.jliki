@@ -10,7 +10,7 @@
  *
  * Author: Sebastian Maisch
  * Last changes:
- * 12.11.2011: File creation.
+ * 17.11.2011: File creation.
  *
  * This package contains user related utilities.
  * @since 0.1

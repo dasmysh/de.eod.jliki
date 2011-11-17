@@ -35,6 +35,7 @@ import javax.servlet.http.Cookie;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import de.eod.jliki.config.ConfigManager;
 import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
 import de.eod.jliki.users.utils.PermissionCategoryMap;
@@ -68,6 +69,12 @@ public class LoginBean implements Serializable {
     private PermissionType configPermission = PermissionType.NOTHING;
     /** holds the map with all configuration related permissions. */
     private final PermissionCategoryMap configPermissions;
+    /** holds the highest permission for docroot the user has. */
+    private PermissionType docrootPermission;
+    /** holds the map with all docroot related permissions. */
+    private final PermissionCategoryMap docrootPermissions;
+    /** holds the map with all files related permissions. */
+    private final PermissionCategoryMap filePermissions;
 
     /**
      * Class construction.<br/>
@@ -79,6 +86,11 @@ public class LoginBean implements Serializable {
         this.configPermissions.put("page", PermissionType.NOTHING);
         this.configPermissions.put("db", PermissionType.NOTHING);
         this.configPermissions.put("latex", PermissionType.NOTHING);
+
+        this.docrootPermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_DOCROOT);
+        this.filePermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_FILES);
+        this.clearPermissions();
+
         this.checkCookie();
     }
 
@@ -166,6 +178,46 @@ public class LoginBean implements Serializable {
     }
 
     /**
+     * getter for property docrootPermission
+     * @return returns the docrootPermission.
+    */
+    public final PermissionType getDocrootPermission() {
+        return this.docrootPermission;
+    }
+
+    /**
+     * setter for property docrootPermission
+     * @param theDocrootPermission The docrootPermission to set.
+     */
+    public final void setDocrootPermission(final Permission theDocrootPermission) {
+        this.docrootPermission = this.docrootPermissions.put(theDocrootPermission);
+    }
+
+    /**
+     * getter for property docrootPermissions
+     * @return returns the docrootPermissions.
+    */
+    public final PermissionCategoryMap getDocrootPermissions() {
+        return this.docrootPermissions;
+    }
+
+    /**
+     * getter for property filePermissions
+     * @return returns the filePermissions.
+    */
+    public final PermissionCategoryMap getFilePermissions() {
+        return this.filePermissions;
+    }
+
+    /**
+     * setter for property filePermission
+     * @param theFilePermission The filePermissions to set.
+     */
+    public final void setFilePermission(final Permission theFilePermission) {
+        this.filePermissions.put(theFilePermission);
+    }
+
+    /**
      * Returns if the configuration dialog is viewed or not.<br/>
      * @return true if the config dialog is to be shown
      */
@@ -191,6 +243,13 @@ public class LoginBean implements Serializable {
     public final void clearPermissions() {
         this.configPermission = PermissionType.NOTHING;
         this.configPermissions.clearPermissions();
+
+        this.docrootPermissions.clear();
+        this.docrootPermission = this.docrootPermissions.put("@compileddocs", ConfigManager.getInstance().getConfig()
+                .getBaseConfig().getPubCompiledDocPermission());
+
+        this.filePermissions.clear();
+        this.filePermissions.put("*", ConfigManager.getInstance().getConfig().getBaseConfig().getPubFilePermission());
     }
 
     /**

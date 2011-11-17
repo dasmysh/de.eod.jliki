@@ -44,7 +44,7 @@ import javax.persistence.TemporalType;
 import org.apache.commons.codec.binary.Base64;
 import org.hibernate.annotations.GenericGenerator;
 
-import de.eod.jliki.util.PasswordHashUtility;
+import de.eod.jliki.users.utils.PasswordHashUtility;
 
 /**
  * This is the bean for database serialization of users.<br/>

@@ -23,7 +23,7 @@
  * Last changes:
  * 10.11.2011: File creation.
  */
-package de.eod.jliki.util;
+package de.eod.jliki.users.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

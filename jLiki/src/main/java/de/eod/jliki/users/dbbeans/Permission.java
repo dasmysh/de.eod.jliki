@@ -208,4 +208,32 @@ public class Permission implements Serializable {
         return MessageFormat.format("{0}: id={1}, permissionName={2}", new Object[] {this.getClass().getSimpleName(),
                 this.id, this.permissionName });
     }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean equals(final Object obj) {
+        if (obj == null || !(obj instanceof Permission)) {
+            return false;
+        }
+
+        final Permission var = (Permission) obj;
+
+        return var.getCategory().equals(this.category) && var.getPermissionName().equals(this.permissionName);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     * {@inheritDoc}
+     */
+    @Override
+    public final int hashCode() {
+        final int startValue = 13;
+        final int multi = 43;
+        int hashCode = startValue + this.category == null ? 0 : this.category.hashCode();
+        hashCode = hashCode * multi + (this.permissionName == null ? 0 : this.permissionName.hashCode());
+        return hashCode;
+    }
 }

@@ -211,6 +211,7 @@ public class BaseConfigBean implements Serializable {
                 .setPubCompiledDocPermission(this.pubCompiledDocPermission);
         ConfigManager.getInstance().getConfig().getBaseConfig().setPubFilePermission(this.pubFilePermission);
         ConfigManager.getInstance().saveConfig();
+        ConfigManager.getInstance().getConfig().getBaseConfig().onChange();
         BaseConfigBean.LOGGER.info("Wrote base configuration!");
     }
 }

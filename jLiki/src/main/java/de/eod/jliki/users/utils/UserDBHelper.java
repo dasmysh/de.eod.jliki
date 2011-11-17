@@ -27,6 +27,7 @@ package de.eod.jliki.users.utils;
 
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -41,6 +42,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import de.eod.jliki.config.ConfigManager;
 import de.eod.jliki.db.servlets.DBSetup;
 import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
@@ -48,7 +50,6 @@ import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.User.ActiveState;
 import de.eod.jliki.users.dbbeans.UserGroup;
 import de.eod.jliki.users.jsfbeans.LoginBean;
-import de.eod.jliki.util.PasswordHashUtility;
 
 /**
  * Helper class for all user related database activitys.<br/>
@@ -201,18 +202,9 @@ public final class UserDBHelper {
             dbUser.setCookieid("");
         }
 
-        // find permissions ...
-        for (final Permission perm : dbUser.getPermissions()) {
-            if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
-                userLogin.setConfigPermission(perm);
-            }
-        }
+        UserDBHelper.setLoginUsersPermissions(dbUser.getPermissions(), userLogin);
         for (final UserGroup grp : dbUser.getGroups()) {
-            for (final Permission perm : grp.getPermissions()) {
-                if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
-                    userLogin.setConfigPermission(perm);
-                }
-            }
+            UserDBHelper.setLoginUsersPermissions(grp.getPermissions(), userLogin);
         }
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance()
@@ -220,6 +212,23 @@ public final class UserDBHelper {
         httpServletResponse.addCookie(cookie);
 
         return didLogin;
+    }
+
+    /**
+     * Sets all permissions from a set to a login bean object.<br/>
+     * @param permissions the permissions to set
+     * @param login the login bean
+     */
+    private static void setLoginUsersPermissions(final Set<Permission> permissions, final LoginBean login) {
+        for (final Permission perm : permissions) {
+            if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
+                login.setConfigPermission(perm);
+            } else if (PermissionCategoryMap.CATEGORY_DOCROOT.equals(perm.getCategory())) {
+                login.setDocrootPermission(perm);
+            } else if (PermissionCategoryMap.CATEGORY_FILES.equals(perm.getCategory())) {
+                login.setFilePermission(perm);
+            }
+        }
     }
 
     /**
@@ -327,6 +336,35 @@ public final class UserDBHelper {
     }
 
     /**
+     * Sets the given permissions to the group. <code>NOTHING</code>-Permissions will be deleted.<br/>
+     * @param groupName the groups name
+     * @param permissions the permissions to add
+     */
+    public static void setGroupPermissions(final String groupName, final Permission[] permissions) {
+        final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
+        final Session session = sf.openSession();
+        final Transaction trx = session.beginTransaction();
+
+        final Query groupQuery = session.createQuery("select group from usergroup where group.groupname = :groupname");
+        groupQuery.setString("groupname", groupName);
+
+        UserGroup users = null;
+        final Iterator<?> grpIt = groupQuery.iterate();
+        if (grpIt.hasNext()) {
+            users = (UserGroup) grpIt.next();
+            for (final Permission perm : permissions) {
+                users.getPermissions().remove(perm);
+                if (perm.getType() != PermissionType.NOTHING) {
+                    users.getPermissions().add(perm);
+                }
+            }
+        }
+
+        trx.commit();
+        session.close();
+    }
+
+    /**
      * Initializes the database for user management.<br/>
      */
     public static void initializeDB() {
@@ -335,7 +373,12 @@ public final class UserDBHelper {
                 new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.READWRITER));
 
         final UserGroup users = new UserGroup("users");
-        // TODO: set standard user permissions
+        users.getPermissions().add(
+                new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT, ConfigManager.getInstance().getConfig()
+                        .getBaseConfig().getUserDocrootPermission()));
+        users.getPermissions().add(
+                new Permission("*", PermissionCategoryMap.CATEGORY_FILES, ConfigManager.getInstance().getConfig()
+                        .getBaseConfig().getUserFilePermission()));
 
         final User admin = new User("admin", "password", "", "", "");
         admin.getGroups().add(admins);

@@ -42,11 +42,17 @@ public class PermissionCategoryMap extends HashMap<String, PermissionType> {
 
     /** holds the configuration category name. */
     public static final String CATEGORY_CONFIG = "config";
+    /** holds the document root category name. */
+    public static final String CATEGORY_DOCROOT = "docroot";
+    /** holds the files category name. */
+    public static final String CATEGORY_FILES = "files";
 
     /** holds the categories name of this map. */
     private final String category;
     /** holds the currently highest permission in this map. */
     private PermissionType highestPerm = PermissionType.NOTHING;
+    /** holds the "for all" permission. */
+    private PermissionType forAllPerm = PermissionType.NOTHING;
 
     /**
      * Class construction.<br/>
@@ -82,8 +88,9 @@ public class PermissionCategoryMap extends HashMap<String, PermissionType> {
             return this.highestPerm;
         }
 
-        final PermissionType newPerm = PermissionCategoryMap.getMaxPermission(this.get(permission.getPermissionName()),
+        PermissionType newPerm = PermissionCategoryMap.getMaxPermission(this.get(permission.getPermissionName()),
                 permission.getType());
+        newPerm = PermissionCategoryMap.getMaxPermission(this.forAllPerm, newPerm);
         this.put(permission.getPermissionName(), newPerm);
         this.highestPerm = PermissionCategoryMap.getMaxPermission(this.highestPerm, newPerm);
         return this.highestPerm;
@@ -94,6 +101,7 @@ public class PermissionCategoryMap extends HashMap<String, PermissionType> {
      * @param perm the permission to add
      */
     private void addPermissionToAll(final PermissionType perm) {
+        this.forAllPerm = perm;
         for (final Map.Entry<String, PermissionType> entry : this.entrySet()) {
             this.put(entry.getKey(), PermissionCategoryMap.getMaxPermission(perm, entry.getValue()));
             this.highestPerm = PermissionCategoryMap.getMaxPermission(this.highestPerm, entry.getValue());

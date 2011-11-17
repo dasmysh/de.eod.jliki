@@ -27,7 +27,10 @@ package de.eod.jliki.config;
 
 import java.io.Serializable;
 
+import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
+import de.eod.jliki.users.utils.PermissionCategoryMap;
+import de.eod.jliki.users.utils.UserDBHelper;
 
 /**
  * The jLikis base configuration.<br/>
@@ -203,5 +206,17 @@ public class BaseConfig implements Serializable {
         final BaseConfig cfg = new BaseConfig("./documents", standardFileLock, standardChanges, PermissionType.READER,
                 PermissionType.READER, PermissionType.READER, PermissionType.NOTHING);
         return cfg;
+    }
+
+    /**
+     * Updates permission settings.<br/>
+     */
+    public final void onChange() {
+        final Permission userDocRoot = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
+                this.userDocrootPermission);
+        final Permission userFile = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, this.userFilePermission);
+        final Permission[] userPermissions = new Permission[] {userDocRoot, userFile };
+
+        UserDBHelper.setGroupPermissions("users", userPermissions);
     }
 }
