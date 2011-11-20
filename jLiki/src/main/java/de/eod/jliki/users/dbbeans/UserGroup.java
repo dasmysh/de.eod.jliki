@@ -32,83 +32,35 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-
-import org.hibernate.annotations.GenericGenerator;
 
 /**
  * This is a bean for the database serialization of groups of users.<br/>
  * @author <a href="mailto:sebastian.maisch@googlemail.com">Sebastian Maisch</a>
  */
 @Entity
-public class UserGroup implements Serializable {
+public class UserGroup extends PermissionHolder implements Serializable {
 
     /** holds serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
-    /** holds the group id. */
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private Integer id;
-    /** holds the groups name. */
-    private String groupname;
     /** holds the users in the group. */
     @ManyToMany(cascade = {CascadeType.ALL })
     private Set<User> users = new HashSet<User>();
-    /** holds the permissions the group has. */
-    @ManyToMany(cascade = {CascadeType.ALL })
-    private Set<Permission> permissions = new HashSet<Permission>();
 
     /**
      * Class construction.<br/>
      */
     public UserGroup() {
-        this.id = 0;
-        this.groupname = "";
+        super();
     }
 
     /**
      * Class construction.<br/>
-     * @param name the groups name
+     * @param groupname the groups name
      */
-    public UserGroup(final String name) {
-        this.id = 0;
-        this.groupname = name;
-    }
-
-    /**
-     * getter for property id
-     * @return returns the id.
-    */
-    public final Integer getId() {
-        return this.id;
-    }
-
-    /**
-     * setter for property id
-     * @param theId The id to set.
-     */
-    public final void setId(final Integer theId) {
-        this.id = theId;
-    }
-
-    /**
-     * getter for property groupname
-     * @return returns the groupname.
-    */
-    public final String getGroupname() {
-        return this.groupname;
-    }
-
-    /**
-     * setter for property groupname
-     * @param theGroupname The groupname to set.
-     */
-    public final void setGroupname(final String theGroupname) {
-        this.groupname = theGroupname;
+    public UserGroup(final String groupname) {
+        super(groupname);
     }
 
     /**
@@ -128,28 +80,12 @@ public class UserGroup implements Serializable {
     }
 
     /**
-     * getter for property permissions
-     * @return returns the permissions.
-    */
-    public final Set<Permission> getPermissions() {
-        return this.permissions;
-    }
-
-    /**
-     * setter for property permissions
-     * @param thePermissions The permissions to set.
-     */
-    public final void setPermissions(final Set<Permission> thePermissions) {
-        this.permissions = thePermissions;
-    }
-
-    /**
      * @see java.lang.Object#toString()
      * {@inheritDoc}
      */
     @Override
     public final String toString() {
-        return MessageFormat.format("{0}: id={1}, groupname={2}", new Object[] {this.getClass().getSimpleName(),
-                this.id, this.groupname });
+        return MessageFormat.format("{0}: id={1}, groupname={2}",
+                new Object[] {this.getClass().getSimpleName(), this.getId(), this.getName() });
     }
 }

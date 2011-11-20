@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -38,10 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * Servlet class for generating captchas.<br/>
@@ -109,6 +106,14 @@ public class CaptchaServlet extends HttpServlet {
 
         // transform image data into jpeg byte array
         final ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
+
+        try {
+            ImageIO.write(challenge, "jpg", jpegOutputStream);
+        } catch (final IOException e) {
+            CaptchaServlet.LOGGER.error("Could not create captcha!", e);
+        }
+
+        /*
         final JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(jpegOutputStream);
 
         try {
@@ -118,7 +123,7 @@ public class CaptchaServlet extends HttpServlet {
         } catch (final IOException e) {
             CaptchaServlet.LOGGER.error("Could not create captcha!", e);
         }
-
+        */
         captchaChallenge = jpegOutputStream.toByteArray();
         return captchaChallenge;
 

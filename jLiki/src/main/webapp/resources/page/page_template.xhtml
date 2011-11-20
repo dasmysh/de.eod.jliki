@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="./css/liki.css"/>
     <link rel="stylesheet" type="text/css" href="./css/formElements.css"/>
     <link rel="stylesheet" type="text/css" href="./css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/documents.css"/>
     <title><h:outputText value="#{pageConfigBean.pageTitle}"/></title>
   </h:head>
   <h:body>
@@ -29,7 +30,7 @@
       </div>
       <div class="page_title"><h:outputText value="#{pageConfigBean.pageName}"/></div>
       <div class="page_subtitle"><h:outputText value="#{pageConfigBean.pageSubtitle}"/></div>
-      <h:messages globalOnly="true"/><br/>
+      <h:messages fatalClass="fatal" errorClass="error" warnClass="warn" infoClass="info" globalOnly="true"/><br/>
       <rich:messages fatalClass="fatal" errorClass="error" warnClass="warn" infoClass="info" globalOnly="true"/><br/>
       <ui:insert name="content">Main Content</ui:insert>
     </div>

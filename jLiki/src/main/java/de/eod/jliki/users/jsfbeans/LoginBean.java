@@ -81,12 +81,6 @@ public class LoginBean implements Serializable {
      */
     public LoginBean() {
         this.configPermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_CONFIG);
-        this.configPermissions.put("base", PermissionType.NOTHING);
-        this.configPermissions.put("email", PermissionType.NOTHING);
-        this.configPermissions.put("page", PermissionType.NOTHING);
-        this.configPermissions.put("db", PermissionType.NOTHING);
-        this.configPermissions.put("latex", PermissionType.NOTHING);
-
         this.docrootPermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_DOCROOT);
         this.filePermissions = new PermissionCategoryMap(PermissionCategoryMap.CATEGORY_FILES);
         this.clearPermissions();
@@ -221,9 +215,9 @@ public class LoginBean implements Serializable {
      * Returns if the configuration dialog is viewed or not.<br/>
      * @return true if the config dialog is to be shown
      */
-    public final boolean getViewConfigDlg() {
-        return this.configPermission.ordinal() >= PermissionType.READER.ordinal();
-    }
+    //public final boolean getViewConfigDlg() {
+    //    return this.configPermission.ordinal() >= PermissionType.READER.ordinal();
+    //}
 
     /**
      * Clears the config bean.<br/>
@@ -242,14 +236,14 @@ public class LoginBean implements Serializable {
      */
     public final void clearPermissions() {
         this.configPermission = PermissionType.NOTHING;
-        this.configPermissions.clearPermissions();
+        this.configPermissions.clear();
 
         this.docrootPermissions.clear();
-        this.docrootPermission = this.docrootPermissions.put("@compileddocs", ConfigManager.getInstance().getConfig()
-                .getBaseConfig().getPubCompiledDocPermission());
+        this.docrootPermission = this.docrootPermissions.put(ConfigManager.getInstance().getConfig().getBaseConfig()
+                .pubCompiledDocPermission());
 
         this.filePermissions.clear();
-        this.filePermissions.put("*", ConfigManager.getInstance().getConfig().getBaseConfig().getPubFilePermission());
+        this.filePermissions.put(ConfigManager.getInstance().getConfig().getBaseConfig().pubFilePermission());
     }
 
     /**
@@ -257,8 +251,12 @@ public class LoginBean implements Serializable {
      * @return always a null object
      */
     public final String doLogon() {
+        this.clearPermissions();
+
         if (!UserDBHelper.loginUser(this.userName, this.password, this.rememberMe, this)) {
             LoginBean.LOGGER.error("Login failed.");
+            this.password = null;
+            return null;
         }
 
         this.password = null;
@@ -273,8 +271,7 @@ public class LoginBean implements Serializable {
      */
     public final String doLogout() {
         UserDBHelper.logoutUser(this);
-
-        return "";
+        return null;
     }
 
     /**

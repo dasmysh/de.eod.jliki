@@ -17,11 +17,20 @@
     <link rel="stylesheet" type="text/css" href="./css/liki.css"/>
     <link rel="stylesheet" type="text/css" href="./css/formElements.css"/>
     <link rel="stylesheet" type="text/css" href="./css/dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/documents.css"/>
     <title><h:outputText value="#{pageConfigBean.pageTitle}"/></title>
   </h:head>
   <h:body>
     <ui:composition template="resources/page/page_template.xhtml">
       <ui:define name="content">
+        <h:panelGroup id="docrootPanel" layout="block" 
+            rendered="#{permissionTypeBean.canRead(loginBean.docrootPermission)}">
+          <page:document_root/>
+        </h:panelGroup>
+        <h:panelGroup id="newDocPanel" layout="block"
+            rendered="#{permissionTypeBean.canWrite(loginBean.docrootPermission)}">
+          <dlg:new_document/>
+        </h:panelGroup>
       </ui:define>
     </ui:composition>
   </h:body>

@@ -23,6 +23,10 @@
       <base-name>de.eod.jliki.config.ConfigResources</base-name>
       <var>configMsg</var>
     </resource-bundle>
+    <resource-bundle>
+      <base-name>de.eod.jliki.documents.DocResources</base-name>
+      <var>docMsg</var>
+    </resource-bundle>
   </application>
   <validator>
     <validator-id>captchaValidator</validator-id>

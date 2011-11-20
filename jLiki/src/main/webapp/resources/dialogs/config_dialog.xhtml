@@ -13,14 +13,14 @@
     <composite:interface/>
 
     <composite:implementation>
-      <h:panelGroup rendered="#{loginBean.viewConfigDlg}" layout="block"><div>
+      <h:panelGroup rendered="#{permissionTypeBean.canRead(loginBean.configPermission)}" layout="block"><div>
         <h:outputLink value="#" id="configLink" onclick="#{rich:component('config_dlg')}.show()">
           <h:outputText value="#{configMsg['config.link']}"/>
         </h:outputLink></div>
       </h:panelGroup>
 
       <rich:popupPanel id="config_dlg" width="650" autosized="true" modal="true"
-                       moveable="false" resizeable="false" rendered="#{loginBean.viewConfigDlg}">
+                       moveable="false" resizeable="false" rendered="#{permissionTypeBean.canRead(loginBean.configPermission)}">
         <f:facet name="header">
           <h:outputText value="#{configMsg['config.dialog.heading']}"/>
         </f:facet>

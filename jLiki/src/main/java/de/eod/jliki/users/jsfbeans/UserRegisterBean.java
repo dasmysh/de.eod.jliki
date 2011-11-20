@@ -259,7 +259,7 @@ public class UserRegisterBean implements Cloneable, Serializable {
 
         UserRegisterBean.LOGGER.debug("Generated key for user: \"" + userHash + "\"");
 
-        final String emsLink = serverUrl + "/activate.xhtml?user=" + newUser.getUsername() + "&key=" + userHash;
+        final String emsLink = serverUrl + "/activate.xhtml?user=" + newUser.getName() + "&key=" + userHash;
         final String emsLikiName = ConfigManager.getInstance().getConfig().getPageConfig().getPageName();
         final String emsEMailText = MessageFormat.format(activateEMailTemplate, emsLikiName, this.firstname,
                 this.lastname, this.username, emsLink);

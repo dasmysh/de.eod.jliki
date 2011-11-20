@@ -35,14 +35,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.codec.binary.Base64;
-import org.hibernate.annotations.GenericGenerator;
 
 import de.eod.jliki.users.utils.PasswordHashUtility;
 
@@ -52,7 +49,7 @@ import de.eod.jliki.users.utils.PasswordHashUtility;
  *
  */
 @Entity
-public class User implements Serializable {
+public class User extends PermissionHolder implements Serializable {
 
     /** holds the serialization UID. */
     private static final long serialVersionUID = 1L;
@@ -67,13 +64,6 @@ public class User implements Serializable {
         LOCKED
     }
 
-    /** holds the id. */
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    private Integer id;
-    /** holds the users name. */
-    private String username;
     /** holds the users password. */
     private String password;
     /** holds the passwords salt. */
@@ -98,16 +88,12 @@ public class User implements Serializable {
     /** holds the groups the user is in. */
     @ManyToMany(cascade = {CascadeType.ALL })
     private Set<UserGroup> groups = new HashSet<UserGroup>();
-    /** holds the permissions the user has. */
-    @ManyToMany(cascade = {CascadeType.ALL })
-    private Set<Permission> permissions = new HashSet<Permission>();
 
     /**
      * Creates an user object.<br/>
      */
     public User() {
-        this.id = 0;
-        this.username = "";
+        super();
         this.password = "";
         this.salt = "";
         this.email = "";
@@ -129,8 +115,7 @@ public class User implements Serializable {
      */
     public User(final String theUsername, final String thePassword, final String theEmail, final String theFirstname,
             final String theLastname) {
-        this.id = 0;
-        this.username = theUsername;
+        super(theUsername);
         this.email = theEmail;
         this.firstname = theFirstname;
         this.lastname = theLastname;
@@ -142,34 +127,6 @@ public class User implements Serializable {
         final byte[] byteSalt = PasswordHashUtility.generateSalt();
         this.password = PasswordHashUtility.hashPassword(thePassword, byteSalt);
         this.salt = Base64.encodeBase64String(byteSalt);
-    }
-
-    /**
-     * @return the id
-     */
-    public final Integer getId() {
-        return this.id;
-    }
-
-    /**
-     * @param theId the id to set
-     */
-    public final void setId(final Integer theId) {
-        this.id = theId;
-    }
-
-    /**
-     * @return the username
-     */
-    public final String getUsername() {
-        return this.username;
-    }
-
-    /**
-     * @param theUsername the username to set
-     */
-    public final void setUsername(final String theUsername) {
-        this.username = theUsername;
     }
 
     /**
@@ -317,22 +274,6 @@ public class User implements Serializable {
     }
 
     /**
-     * getter for property permissions
-     * @return returns the permissions.
-    */
-    public final Set<Permission> getPermissions() {
-        return this.permissions;
-    }
-
-    /**
-     * setter for property permissions
-     * @param thePermissions The permissions to set.
-     */
-    public final void setPermissions(final Set<Permission> thePermissions) {
-        this.permissions = thePermissions;
-    }
-
-    /**
      * @see java.lang.Object#toString()
      * {@inheritDoc}
      */
@@ -340,7 +281,7 @@ public class User implements Serializable {
     public final String toString() {
         return MessageFormat.format("{0}: id={1}, username={2}, password={3}, salt={4}, email={5}, fistname={6},"
                 + " lastname={7}, active={8}, registerdate={9}, lastlogin={10}, salt={11}, cookieid={12}",
-                new Object[] {this.getClass().getSimpleName(), this.id, this.username, this.password, this.salt,
+                new Object[] {this.getClass().getSimpleName(), this.getId(), this.getName(), this.password, this.salt,
                         this.email, this.firstname, this.lastname, this.active, this.registerdate, this.lastlogin,
                         this.salt, this.cookieid });
     }

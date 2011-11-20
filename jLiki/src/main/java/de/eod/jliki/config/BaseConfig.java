@@ -48,13 +48,13 @@ public class BaseConfig implements Serializable {
     /** holds the number of recent changes to display. */
     private int numRecentChanges;
     /** holds the standard permission a user has on the document root. */
-    private PermissionType userDocrootPermission;
+    private Permission userDocrootPermission;
     /** holds the standard permission a user has on each file. */
-    private PermissionType userFilePermission;
+    private Permission userFilePermission;
     /** holds the standard permission the public has on a compiled document. */
-    private PermissionType pubCompiledDocPermission;
+    private Permission pubCompiledDocPermission;
     /** holds the standard permission the public has on each file. */
-    private PermissionType pubFilePermission;
+    private Permission pubFilePermission;
 
     /**
      * Class construction.<br/>
@@ -78,10 +78,12 @@ public class BaseConfig implements Serializable {
         this.docBasedir = theDocBasedir;
         this.fileLockTime = theFileLockTime;
         this.numRecentChanges = theNumRecentChanged;
-        this.userDocrootPermission = theUserDocrootPermission;
-        this.userFilePermission = theUserFilePermission;
-        this.pubCompiledDocPermission = thePubCompiledDocPermission;
-        this.pubFilePermission = thePubFilePermission;
+        this.userDocrootPermission = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
+                theUserDocrootPermission);
+        this.userFilePermission = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, theUserFilePermission);
+        this.pubCompiledDocPermission = new Permission("@compiledocs", PermissionCategoryMap.CATEGORY_DOCROOT,
+                thePubCompiledDocPermission);
+        this.pubFilePermission = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, thePubFilePermission);
     }
 
     /**
@@ -137,7 +139,7 @@ public class BaseConfig implements Serializable {
      * @return returns the userDocrootPermission.
     */
     public final PermissionType getUserDocrootPermission() {
-        return this.userDocrootPermission;
+        return this.userDocrootPermission.getType();
     }
 
     /**
@@ -145,7 +147,8 @@ public class BaseConfig implements Serializable {
      * @param theUserDocrootPermission The userDocrootPermission to set.
      */
     public final void setUserDocrootPermission(final PermissionType theUserDocrootPermission) {
-        this.userDocrootPermission = theUserDocrootPermission;
+        this.userDocrootPermission = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
+                theUserDocrootPermission);
     }
 
     /**
@@ -153,7 +156,7 @@ public class BaseConfig implements Serializable {
      * @return returns the userFilePermission.
     */
     public final PermissionType getUserFilePermission() {
-        return this.userFilePermission;
+        return this.userFilePermission.getType();
     }
 
     /**
@@ -161,7 +164,7 @@ public class BaseConfig implements Serializable {
      * @param theUserFilePermission The userFilePermission to set.
      */
     public final void setUserFilePermission(final PermissionType theUserFilePermission) {
-        this.userFilePermission = theUserFilePermission;
+        this.userFilePermission = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, theUserFilePermission);
     }
 
     /**
@@ -169,7 +172,7 @@ public class BaseConfig implements Serializable {
      * @return returns the pubCompiledDocPermission.
     */
     public final PermissionType getPubCompiledDocPermission() {
-        return this.pubCompiledDocPermission;
+        return this.pubCompiledDocPermission.getType();
     }
 
     /**
@@ -177,7 +180,8 @@ public class BaseConfig implements Serializable {
      * @param thePubCompiledDocPermission The pubCompiledDocPermission to set.
      */
     public final void setPubCompiledDocPermission(final PermissionType thePubCompiledDocPermission) {
-        this.pubCompiledDocPermission = thePubCompiledDocPermission;
+        this.pubCompiledDocPermission = new Permission("@compiledocs", PermissionCategoryMap.CATEGORY_DOCROOT,
+                thePubCompiledDocPermission);
     }
 
     /**
@@ -185,7 +189,7 @@ public class BaseConfig implements Serializable {
      * @return returns the pubFilePermission.
     */
     public final PermissionType getPubFilePermission() {
-        return this.pubFilePermission;
+        return this.pubFilePermission.getType();
     }
 
     /**
@@ -193,7 +197,7 @@ public class BaseConfig implements Serializable {
      * @param thePubFilePermission The pubFilePermission to set.
      */
     public final void setPubFilePermission(final PermissionType thePubFilePermission) {
-        this.pubFilePermission = thePubFilePermission;
+        this.pubFilePermission = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, thePubFilePermission);
     }
 
     /**
@@ -212,11 +216,39 @@ public class BaseConfig implements Serializable {
      * Updates permission settings.<br/>
      */
     public final void onChange() {
-        final Permission userDocRoot = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
-                this.userDocrootPermission);
-        final Permission userFile = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, this.userFilePermission);
-        final Permission[] userPermissions = new Permission[] {userDocRoot, userFile };
+        final Permission[] userPermissions = new Permission[] {this.userDocrootPermission, this.userFilePermission };
+        UserDBHelper.setHolderPermissions("users", userPermissions);
+    }
 
-        UserDBHelper.setGroupPermissions("users", userPermissions);
+    /**
+     * Returns the users docroot permission.<br/>
+     * @return the permission
+     */
+    public final Permission userDocrootPermission() {
+        return this.userDocrootPermission;
+    }
+
+    /**
+     * Returns the users file permission.<br/>
+     * @return the permission
+     */
+    public final Permission userFilePermission() {
+        return this.userFilePermission;
+    }
+
+    /**
+     * Returns the public users compiled document permission.<br/>
+     * @return the permission
+     */
+    public final Permission pubCompiledDocPermission() {
+        return this.pubCompiledDocPermission;
+    }
+
+    /**
+     * Returns the public users file permission.<br/>
+     * @return the permission
+     */
+    public final Permission pubFilePermission() {
+        return this.pubFilePermission;
     }
 }

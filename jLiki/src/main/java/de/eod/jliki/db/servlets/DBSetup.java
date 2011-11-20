@@ -35,7 +35,9 @@ import javax.servlet.ServletResponse;
 import org.apache.log4j.Logger;
 
 import de.eod.jliki.db.DBManager;
+import de.eod.jliki.documents.dbbeans.Document;
 import de.eod.jliki.users.dbbeans.Permission;
+import de.eod.jliki.users.dbbeans.PermissionHolder;
 import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.UserGroup;
 import de.eod.jliki.users.utils.UserDBHelper;
@@ -63,7 +65,8 @@ public class DBSetup extends GenericServlet {
 
         this.logger.info("Starting with database setup...");
 
-        final Class<?>[] tableClasses = new Class<?>[] {User.class, UserGroup.class, Permission.class };
+        final Class<?>[] tableClasses = new Class<?>[] {PermissionHolder.class, User.class, UserGroup.class,
+                Permission.class, Document.class };
         // setup database ...
         DBSetup.setDbManager(new DBManager(tableClasses));
 

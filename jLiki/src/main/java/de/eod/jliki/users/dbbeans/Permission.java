@@ -75,10 +75,7 @@ public class Permission implements Serializable {
     private PermissionType type;
     /** holds the users with this permission. */
     @ManyToMany(cascade = {CascadeType.ALL })
-    private Set<User> users = new HashSet<User>();
-    /** holds the groups with this permission. */
-    @ManyToMany(cascade = {CascadeType.ALL })
-    private Set<UserGroup> groups = new HashSet<UserGroup>();
+    private Set<PermissionHolder> holders = new HashSet<PermissionHolder>();
 
     /**
      * Class construction.<br/>
@@ -168,35 +165,19 @@ public class Permission implements Serializable {
     }
 
     /**
-     * getter for property users
-     * @return returns the users.
+     * getter for property holders
+     * @return returns the holders.
     */
-    public final Set<User> getUsers() {
-        return this.users;
+    public final Set<PermissionHolder> getHolders() {
+        return this.holders;
     }
 
     /**
-     * setter for property users
-     * @param theUsers The users to set.
+     * setter for property holders
+     * @param theHolders The holders to set.
      */
-    public final void setUsers(final Set<User> theUsers) {
-        this.users = theUsers;
-    }
-
-    /**
-     * getter for property groups
-     * @return returns the groups.
-    */
-    public final Set<UserGroup> getGroups() {
-        return this.groups;
-    }
-
-    /**
-     * setter for property groups
-     * @param theGroups The groups to set.
-     */
-    public final void setGroups(final Set<UserGroup> theGroups) {
-        this.groups = theGroups;
+    public final void setHolders(final Set<PermissionHolder> theHolders) {
+        this.holders = theHolders;
     }
 
     /**

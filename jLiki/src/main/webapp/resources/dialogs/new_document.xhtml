@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--
+   Copyright (C) 2011 The jLiki Programming Team.
+   This file is part of jLiki.
+   For license see /LICENSE
+  -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:composite="http://java.sun.com/jsf/composite" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+  <h:head/>
+  <h:body>
+    <composite:interface />
+
+    <composite:implementation>
+      <h:panelGroup layout="block">
+        <h:outputLink value="#" id="createDocumentLink" onclick="#{rich:component('create_doc_dlg')}.show()">
+          <h:outputText value="#{docMsg['create.document.link']}"/>
+        </h:outputLink>
+      </h:panelGroup>
+      <rich:popupPanel id="create_doc_dlg" modal="true" autosized="true" resizeable="false"
+                       moveable="false" ajaxRendered="true">
+        <f:facet name="header">
+          <h:outputText value="#{docMsg['create.document.panel.header']}"/>
+        </f:facet>
+        <f:facet name="controls">
+          <h:outputLink value="#" onclick="#{rich:component('create_doc_dlg')}.hide(); return false;">X</h:outputLink>
+        </f:facet>
+        <h:form id="createDocForm">
+          <rich:messages globalOnly="true"/>
+          <h:panelGrid id="createDocPanel" columns="3" styleClass="dialogPanel">
+              <h:outputLabel for="docname" value="#{docMsg['create.document.panel.docname']}"/>
+              <h:inputText id="docname" value="#{docrootBean.createDocName}"/>
+              <rich:message for="docname"/>
+              <h:outputText for="docid" value="#{docMsg['create.document.panel.docid']}"/>
+              <h:inputText id="docid" value="#{docrootBean.createDocShortname}"/>
+              <rich:message for="docid"/>
+              <h:outputLabel for="docfilename" value="#{docMsg['create.document.panel.docfilename']}"/>
+              <h:inputText id="docfilename" value="#{docrootBean.createDocMainfilename}"/>
+              <rich:message for="docfilename"/>
+              <h:outputLabel for="docdescription" value="#{docMsg['create.document.panel.docdescription']}"/>
+              <h:inputTextarea id="docdescription" value="#{docrootBean.createDocDescription}"
+                  rows="8" cols="134" style="resize: none;"/>
+              <rich:message for="docdescription"/>
+              <h:outputLabel for="docuserpermission" value="#{docMsg['create.document.panel.docuserpermission']}"/>
+              <h:selectOneMenu id="docuserpermission" value="#{docrootBean.createDocUserPermission}">
+                <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                               var="permissionType"
+                               itemValue="#{permissionType}"
+                               itemLabel="#{configMsg[permissionType.name()]}"/>
+              </h:selectOneMenu>
+              <rich:message for="docuserpermission"/>
+              <h:outputLabel for="docgrppermission" value="#{docMsg['create.document.panel.docgrppermission']}"/>
+              <h:selectOneMenu id="docgrppermission" value="#{docrootBean.createDocGroupPermission}">
+                <f:selectItems value="#{permissionTypeBean.permissionTypes}"
+                               var="permissionType"
+                               itemValue="#{permissionType}"
+                               itemLabel="#{configMsg[permissionType.name()]}"/>
+              </h:selectOneMenu>
+              <rich:message for="docgrppermission"/>
+            </h:panelGrid>
+            <a4j:commandButton value="@CREATE@" render="@form" action="#{docrootBean.createNewDocument()}"/>
+              <a4j:commandButton value="@CANCEL@" execute="@this" action="#{docrootBean.refreshDocroot()}" 
+                  render="@form" onclick="#{rich:component('create_doc_dlg')}.hide(); return true;"/>
+        </h:form>
+      </rich:popupPanel>
+    </composite:implementation>
+  </h:body>
+</html>

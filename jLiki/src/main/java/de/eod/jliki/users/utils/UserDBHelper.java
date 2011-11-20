@@ -27,7 +27,6 @@ package de.eod.jliki.users.utils;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -46,6 +45,7 @@ import de.eod.jliki.config.ConfigManager;
 import de.eod.jliki.db.servlets.DBSetup;
 import de.eod.jliki.users.dbbeans.Permission;
 import de.eod.jliki.users.dbbeans.Permission.PermissionType;
+import de.eod.jliki.users.dbbeans.PermissionHolder;
 import de.eod.jliki.users.dbbeans.User;
 import de.eod.jliki.users.dbbeans.User.ActiveState;
 import de.eod.jliki.users.dbbeans.UserGroup;
@@ -68,7 +68,7 @@ public final class UserDBHelper {
     }
 
     /**
-     * Adds the user "admin" to the database if it does not exist.<br/>
+     * Adds a new user to the database if it does not exist.<br/>
      * @param user the user to add
      * @return a hash string of the added user if the user did not exist, <code>null</code> if it existed or insertion failed
      */
@@ -76,18 +76,21 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        Query query = session.createQuery("from User where username=:username or email=:email");
-        query.setString("username", user.getUsername());
-        query.setString("email", user.getEmail());
+        final Query nameQuery = session
+                .createQuery("select holder from PermissionHolder as holder where holder.name=:name");
+        nameQuery.setString("name", user.getName());
+
+        final Query emailQuery = session.createQuery("select user from User as user where user.email=:email");
+        emailQuery.setString("email", user.getEmail());
 
         User dbUser = null;
         String userhash = null;
-        if (!query.iterate().hasNext()) {
+        if (!nameQuery.iterate().hasNext() && !emailQuery.iterate().hasNext()) {
             session.save(user);
-            query = session.createQuery("from User where username=:username");
-            query.setString("username", user.getUsername());
-            final Iterator<?> it = query.iterate();
-            if (query.iterate().hasNext()) {
+            final Query userQuery = session.createQuery("select user from User as user where user.name=:username");
+            userQuery.setString("username", user.getName());
+            final Iterator<?> it = userQuery.iterate();
+            if (userQuery.iterate().hasNext()) {
                 dbUser = (User) it.next();
                 userhash = PasswordHashUtility.generateHashForUrl(dbUser.toString());
             }
@@ -108,7 +111,7 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        final Query query = session.createQuery("from User where username=:username");
+        final Query query = session.createQuery("select user from User as user where user.name=:username");
         query.setString("username", username);
 
         final boolean isUserInDB = query.iterate().hasNext();
@@ -130,7 +133,7 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        final Query userQuery = session.createQuery("select user from User as user where user.username = :username");
+        final Query userQuery = session.createQuery("select user from User as user where user.name = :username");
         userQuery.setString("username", username);
 
         User dbUser = null;
@@ -145,7 +148,8 @@ public final class UserDBHelper {
             }
         }
 
-        final Query groupQuery = session.createQuery("select group from usergroup where group.groupname = :groupname");
+        final Query groupQuery = session
+                .createQuery("select group from usergroup as group where group.name = :groupname");
         groupQuery.setString("groupname", "users");
 
         UserGroup users = null;
@@ -179,7 +183,7 @@ public final class UserDBHelper {
         boolean didLogin = false;
         if (passedLogin && dbUser.getActive() == ActiveState.ACTIVE) {
             didLogin = true;
-            userLogin.setUserName(dbUser.getUsername());
+            userLogin.setUserName(dbUser.getName());
             userLogin.setLoggedIn(true);
         } else {
             didLogin = false;
@@ -202,9 +206,10 @@ public final class UserDBHelper {
             dbUser.setCookieid("");
         }
 
-        UserDBHelper.setLoginUsersPermissions(dbUser.getPermissions(), userLogin);
+        userLogin.clearPermissions();
+        dbUser.transferPermissionsToLogin(userLogin);
         for (final UserGroup grp : dbUser.getGroups()) {
-            UserDBHelper.setLoginUsersPermissions(grp.getPermissions(), userLogin);
+            grp.transferPermissionsToLogin(userLogin);
         }
 
         final HttpServletResponse httpServletResponse = (HttpServletResponse) FacesContext.getCurrentInstance()
@@ -212,23 +217,6 @@ public final class UserDBHelper {
         httpServletResponse.addCookie(cookie);
 
         return didLogin;
-    }
-
-    /**
-     * Sets all permissions from a set to a login bean object.<br/>
-     * @param permissions the permissions to set
-     * @param login the login bean
-     */
-    private static void setLoginUsersPermissions(final Set<Permission> permissions, final LoginBean login) {
-        for (final Permission perm : permissions) {
-            if (PermissionCategoryMap.CATEGORY_CONFIG.equals(perm.getCategory())) {
-                login.setConfigPermission(perm);
-            } else if (PermissionCategoryMap.CATEGORY_DOCROOT.equals(perm.getCategory())) {
-                login.setDocrootPermission(perm);
-            } else if (PermissionCategoryMap.CATEGORY_FILES.equals(perm.getCategory())) {
-                login.setFilePermission(perm);
-            }
-        }
     }
 
     /**
@@ -244,7 +232,7 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        final Query query = session.createQuery("select user from User as user where user.username = :username");
+        final Query query = session.createQuery("select user from User as user where user.name = :username");
         query.setString("username", username);
 
         User dbUser = null;
@@ -305,7 +293,7 @@ public final class UserDBHelper {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
-        final Query query = session.createQuery("select user from User as user where user.username = :username");
+        final Query query = session.createQuery("select user from User as user where user.name = :username");
         query.setString("username", userLogin.getUserName());
 
         final Iterator<?> it = query.iterate();
@@ -337,26 +325,24 @@ public final class UserDBHelper {
 
     /**
      * Sets the given permissions to the group. <code>NOTHING</code>-Permissions will be deleted.<br/>
-     * @param groupName the groups name
+     * @param holderName the groups name
      * @param permissions the permissions to add
      */
-    public static void setGroupPermissions(final String groupName, final Permission[] permissions) {
+    public static void setHolderPermissions(final String holderName, final Permission[] permissions) {
         final SessionFactory sf = DBSetup.getDbManager().getSessionFactory();
         final Session session = sf.openSession();
         final Transaction trx = session.beginTransaction();
 
-        final Query groupQuery = session.createQuery("select group from usergroup where group.groupname = :groupname");
-        groupQuery.setString("groupname", groupName);
+        final Query holderQuery = session
+                .createQuery("select holder from PermissionHolder as holder where holder.name = :holdername");
+        holderQuery.setString("holdername", holderName);
 
-        UserGroup users = null;
-        final Iterator<?> grpIt = groupQuery.iterate();
+        PermissionHolder holder = null;
+        final Iterator<?> grpIt = holderQuery.iterate();
         if (grpIt.hasNext()) {
-            users = (UserGroup) grpIt.next();
+            holder = (PermissionHolder) grpIt.next();
             for (final Permission perm : permissions) {
-                users.getPermissions().remove(perm);
-                if (perm.getType() != PermissionType.NOTHING) {
-                    users.getPermissions().add(perm);
-                }
+                UserDBHelper.addPermissionToHolderWithoutDuplicates(session, holder, perm);
             }
         }
 
@@ -365,25 +351,76 @@ public final class UserDBHelper {
     }
 
     /**
+     * Adds a single permission to the holder making sure no duplicates exist.<br/>
+     * @param session the hibernate session for the permission query
+     * @param holder the holder to add the permission to
+     * @param perm the permission to add
+     */
+    private static void addPermissionToHolderWithoutDuplicates(final Session session, final PermissionHolder holder,
+            final Permission perm) {
+        final Query permQuery = session.createQuery("select permission from Permission as permission where "
+                + "permission.permissionName = :name and permission.category = :category and "
+                + "permission.type = :type");
+        permQuery.setString("name", perm.getPermissionName());
+        permQuery.setString("category", perm.getCategory());
+        permQuery.setInteger("type", perm.getType().ordinal());
+
+        Permission dbPerm = null;
+        final Iterator<?> permIt = permQuery.iterate();
+        if (permIt.hasNext()) {
+            dbPerm = (Permission) permIt.next();
+            holder.addPermission(dbPerm);
+        } else {
+            holder.addPermission(perm);
+        }
+    }
+
+    /**
      * Initializes the database for user management.<br/>
      */
     public static void initializeDB() {
-        final UserGroup admins = new UserGroup("admins");
-        admins.getPermissions().add(
-                new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.READWRITER));
+        final Permission adminsDocroot = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
+                PermissionType.READWRITER);
+        final Permission adminsFiles = new Permission("*", PermissionCategoryMap.CATEGORY_FILES,
+                PermissionType.READWRITER);
+        final Permission adminDocroot = new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT,
+                PermissionType.OWNER);
+        final Permission adminFiles = new Permission("*", PermissionCategoryMap.CATEGORY_FILES, PermissionType.OWNER);
 
-        final UserGroup users = new UserGroup("users");
-        users.getPermissions().add(
-                new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT, ConfigManager.getInstance().getConfig()
-                        .getBaseConfig().getUserDocrootPermission()));
-        users.getPermissions().add(
-                new Permission("*", PermissionCategoryMap.CATEGORY_FILES, ConfigManager.getInstance().getConfig()
-                        .getBaseConfig().getUserFilePermission()));
+        final UserGroup admins = new UserGroup("admins");
+        admins.addPermission(new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.READWRITER));
+        admins.addPermission(adminsDocroot);
+        admins.addPermission(adminsFiles);
 
         final User admin = new User("admin", "password", "", "", "");
+
+        admin.addPermission(new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.OWNER));
+        admin.addPermission(new Permission("*", PermissionCategoryMap.CATEGORY_DOCROOT, PermissionType.OWNER));
+        admin.addPermission(new Permission("*", PermissionCategoryMap.CATEGORY_FILES, PermissionType.OWNER));
+
+        final UserGroup users = new UserGroup("users");
+        // duplicates can occurr here ...
+        final Permission usersDocroot = ConfigManager.getInstance().getConfig().getBaseConfig().userDocrootPermission();
+        final Permission usersFiles = ConfigManager.getInstance().getConfig().getBaseConfig().userFilePermission();
+
+        if (usersDocroot.equals(adminsDocroot) && usersDocroot.getType() == adminsDocroot.getType()) {
+            users.addPermission(adminsDocroot);
+        } else if (usersDocroot.equals(adminDocroot) && usersDocroot.getType() == adminDocroot.getType()) {
+            users.addPermission(adminDocroot);
+        } else {
+            users.addPermission(usersDocroot);
+        }
+
+        if (usersFiles.equals(adminsFiles) && usersFiles.getType() == adminsFiles.getType()) {
+            users.addPermission(adminsFiles);
+        } else if (usersFiles.equals(adminFiles) && usersFiles.getType() == adminFiles.getType()) {
+            users.addPermission(adminFiles);
+        } else {
+            users.addPermission(usersFiles);
+        }
+
         admin.getGroups().add(admins);
         admin.getGroups().add(users);
-        admin.getPermissions().add(new Permission("*", PermissionCategoryMap.CATEGORY_CONFIG, PermissionType.OWNER));
 
         admin.setActive(ActiveState.ACTIVE);
         UserDBHelper.addUserToDB(admin);

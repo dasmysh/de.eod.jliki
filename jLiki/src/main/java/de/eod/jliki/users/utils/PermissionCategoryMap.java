@@ -26,6 +26,8 @@
 package de.eod.jliki.users.utils;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import de.eod.jliki.users.dbbeans.Permission;
@@ -64,13 +66,51 @@ public class PermissionCategoryMap extends HashMap<String, PermissionType> {
     }
 
     /**
-     * Clears all permissions.<br/>
+     * @see java.util.HashMap#clear()
+     * {@inheritDoc}
      */
-    public final void clearPermissions() {
-        for (final Map.Entry<String, PermissionType> entry : this.entrySet()) {
-            this.put(entry.getKey(), PermissionType.NOTHING);
-        }
+    @Override
+    public final void clear() {
         this.highestPerm = PermissionType.NOTHING;
+        this.forAllPerm = PermissionType.NOTHING;
+        super.clear();
+    }
+
+    /**
+     * @see java.util.HashMap#get(java.lang.Object)
+     * {@inheritDoc}
+     */
+    @Override
+    public final PermissionType get(final Object key) {
+        final PermissionType result = super.get(key);
+        if (result == null) {
+            return this.forAllPerm;
+        }
+        return PermissionCategoryMap.getMaxPermission(result, this.forAllPerm);
+    }
+
+    /**
+     * @see java.util.HashMap#put(java.lang.Object, java.lang.Object)
+     * {@inheritDoc}
+     */
+    @Override
+    public final PermissionType put(final String key, final PermissionType value) {
+        final PermissionType newValue = PermissionCategoryMap.getMaxPermission(value, this.forAllPerm);
+        if (newValue.ordinal() <= this.forAllPerm.ordinal()) {
+            return super.remove(key);
+        }
+        return super.put(key, value);
+    }
+
+    /**
+     * @see java.util.HashMap#putAll(java.util.Map)
+     * {@inheritDoc}
+     */
+    @Override
+    public final void putAll(final Map<? extends String, ? extends PermissionType> m) {
+        for (final java.util.Map.Entry<? extends String, ? extends PermissionType> entry : m.entrySet()) {
+            this.put(new Permission(entry.getKey(), this.category, entry.getValue()));
+        }
     }
 
     /**
@@ -97,13 +137,41 @@ public class PermissionCategoryMap extends HashMap<String, PermissionType> {
     }
 
     /**
+     * Returns a list of permission names with a permission equal or higher as the given.<br/>
+     * @param type the permission type to test against
+     * @return the list of names
+     */
+    public final List<String> getAllWithType(final PermissionType type) {
+        final List<String> result = new LinkedList<String>();
+        if (this.highestPerm.ordinal() < type.ordinal()) {
+            return result;
+        }
+
+        if (this.forAllPerm.ordinal() < type.ordinal()
+                || (type == PermissionType.READER && this.forAllPerm == PermissionType.WRITER)) {
+            for (final Map.Entry<String, PermissionType> entry : this.entrySet()) {
+                if (entry.getValue().ordinal() < type.ordinal()
+                        || (type == PermissionType.READER && entry.getValue() == PermissionType.WRITER)) {
+                    continue;
+                }
+                result.add(entry.getKey());
+            }
+            return result;
+        }
+
+        result.add("*");
+        return result;
+    }
+
+    /**
      * Adds a permission to all entries in this map.<br/>
      * @param perm the permission to add
      */
     private void addPermissionToAll(final PermissionType perm) {
-        this.forAllPerm = perm;
+        this.forAllPerm = PermissionCategoryMap.getMaxPermission(this.forAllPerm, perm);
+        this.highestPerm = this.forAllPerm;
         for (final Map.Entry<String, PermissionType> entry : this.entrySet()) {
-            this.put(entry.getKey(), PermissionCategoryMap.getMaxPermission(perm, entry.getValue()));
+            this.put(entry.getKey(), PermissionCategoryMap.getMaxPermission(this.forAllPerm, entry.getValue()));
             this.highestPerm = PermissionCategoryMap.getMaxPermission(this.highestPerm, entry.getValue());
         }
     }

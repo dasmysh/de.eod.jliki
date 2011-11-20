@@ -59,4 +59,34 @@ public class PermissionTypeBean implements Serializable {
     public final int ordinal(final PermissionType type) {
         return type.ordinal();
     }
+
+    /**
+     * Checks if the permission allows reading.<br/>
+     * @param type the permission type to test
+     * @return true if reading is allowed
+     */
+    public final boolean canRead(final PermissionType type) {
+        if (type == PermissionType.READER || type.ordinal() >= PermissionType.READWRITER.ordinal()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the permission allows writing.<br/>
+     * @param type the permission type to test
+     * @return true if writing is allowed
+     */
+    public final boolean canWrite(final PermissionType type) {
+        return type.ordinal() >= PermissionType.WRITER.ordinal();
+    }
+
+    /**
+     * Checks if the permission allows owning.<br/>
+     * @param type the permission type to test
+     * @return true if the permission says owner
+     */
+    public final boolean isOwner(final PermissionType type) {
+        return type == PermissionType.OWNER;
+    }
 }
